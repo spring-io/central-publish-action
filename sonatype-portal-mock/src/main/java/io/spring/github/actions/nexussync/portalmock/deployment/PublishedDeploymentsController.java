@@ -16,7 +16,6 @@
 
 package io.spring.github.actions.nexussync.portalmock.deployment;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.core.io.FileSystemResource;
@@ -47,17 +46,29 @@ class PublishedDeploymentsController {
 	List<PublishedDeploymentDto> listAll() {
 		return this.publishedDeployments.list()
 			.stream()
-			.map((e) -> new PublishedDeploymentDto(e.id(), e.bundle().toString()))
+			.map((e) -> new PublishedDeploymentDto(e.getId(), e.getBundle().toString()))
 			.toList();
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	ResponseEntity<Resource> get(@PathVariable("id") String id) {
-		Path bundle = this.publishedDeployments.get(id);
-		if (bundle == null) {
+		Deployment deployment = this.publishedDeployments.get(id);
+		if (deployment == null) {
 			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.ok(new FileSystemResource(bundle));
+		return ResponseEntity.ok(new FileSystemResource(deployment.getBundle()));
+	}
+
+	@GetMapping(path = "/file/{*name}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	ResponseEntity<byte[]> getFile(@PathVariable("name") String name) {
+		if (name.startsWith("/")) {
+			name = name.substring(1);
+		}
+		Deployment deployment = this.publishedDeployments.findWithFile(name);
+		if (deployment == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(new byte[0]);
 	}
 
 	record PublishedDeploymentDto(String id, String file) {

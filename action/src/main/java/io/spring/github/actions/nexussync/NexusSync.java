@@ -33,7 +33,9 @@ public class NexusSync {
 	public static void main(String... args) {
 		Deployer.Result result;
 		try (ConfigurableApplicationContext app = SpringApplication.run(NexusSync.class, args)) {
-			result = app.getBean(Deployer.class).deploy();
+			Deployer deployer = app.getBean(Deployer.class);
+			deployer.validate();
+			result = deployer.deploy();
 		}
 		int status = switch (result) {
 			case SUCCESS -> 0;

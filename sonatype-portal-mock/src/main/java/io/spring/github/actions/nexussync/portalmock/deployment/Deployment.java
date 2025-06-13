@@ -19,6 +19,7 @@ package io.spring.github.actions.nexussync.portalmock.deployment;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.lang.Nullable;
 
@@ -43,12 +44,14 @@ class Deployment {
 
 	private final @Nullable String errors;
 
+	private final Set<String> files;
+
 	Deployment(String id, PublishingType publishingType, String name, Path bundle) {
-		this(id, publishingType, name, Status.PENDING, Collections.emptyList(), bundle, null);
+		this(id, publishingType, name, Status.PENDING, Collections.emptyList(), bundle, null, Collections.emptySet());
 	}
 
 	Deployment(String id, PublishingType publishingType, String name, Status status, List<String> purls, Path bundle,
-			@Nullable String errors) {
+			@Nullable String errors, Set<String> files) {
 		this.id = id;
 		this.publishingType = publishingType;
 		this.name = name;
@@ -56,6 +59,7 @@ class Deployment {
 		this.purls = purls;
 		this.bundle = bundle;
 		this.errors = errors;
+		this.files = files;
 	}
 
 	String getId() {
@@ -87,12 +91,23 @@ class Deployment {
 		return this.errors;
 	}
 
+	Set<String> getFiles() {
+		return this.files;
+	}
+
 	Deployment withStatus(Status status) {
-		return new Deployment(this.id, this.publishingType, this.name, status, this.purls, this.bundle, this.errors);
+		return new Deployment(this.id, this.publishingType, this.name, status, this.purls, this.bundle, this.errors,
+				this.files);
 	}
 
 	Deployment withErrors(String errors) {
-		return new Deployment(this.id, this.publishingType, this.name, this.status, this.purls, this.bundle, errors);
+		return new Deployment(this.id, this.publishingType, this.name, this.status, this.purls, this.bundle, errors,
+				this.files);
+	}
+
+	Deployment withFiles(Set<String> files) {
+		return new Deployment(this.id, this.publishingType, this.name, this.status, this.purls, this.bundle,
+				this.errors, files);
 	}
 
 	enum PublishingType {

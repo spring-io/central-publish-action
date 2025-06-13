@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.spring.github.actions.nexussync.portalmock.id.IdFactory;
@@ -76,17 +77,18 @@ class Deployments {
 			try {
 				sleep(this.delayBetweenSteps);
 				setDeploymentStatus(id, Deployment.Status.VALIDATING);
-				this.bundleValidator.validate(bundle);
+				Set<String> files = this.bundleValidator.validate(bundle);
 				sleep(this.delayBetweenSteps);
 				setDeploymentStatus(id, Deployment.Status.VALIDATED);
+				setDeploymentFiles(id, files);
 				if (publishingType == Deployment.PublishingType.USER_MANAGED) {
 					return;
 				}
 				sleep(this.delayBetweenSteps);
 				setDeploymentStatus(id, Deployment.Status.PUBLISHING);
 				sleep(this.delayBetweenSteps);
-				this.publishedDeployments.add(id, bundle);
 				setDeploymentStatus(id, Deployment.Status.PUBLISHED);
+				this.publishedDeployments.add(id, this.deployments.get(id));
 			}
 			catch (Exception ex) {
 				setDeploymentStatus(id, Deployment.Status.FAILED, ex.getMessage());
@@ -109,6 +111,10 @@ class Deployments {
 
 	private void setDeploymentStatus(String id, Deployment.Status status, @Nullable String errors) {
 		this.deployments.computeIfPresent(id, (k, deployment) -> deployment.withStatus(status).withErrors(errors));
+	}
+
+	private void setDeploymentFiles(String id, Set<String> files) {
+		this.deployments.computeIfPresent(id, (k, deployment) -> deployment.withFiles(files));
 	}
 
 	@Nullable

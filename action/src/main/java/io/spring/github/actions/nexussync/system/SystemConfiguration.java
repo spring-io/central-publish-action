@@ -21,6 +21,7 @@ import java.time.Clock;
 import io.spring.github.actions.nexussync.NexusSyncProperties;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,6 +46,11 @@ class SystemConfiguration {
 			return new GithubActionsLogger(debugEnabled);
 		}
 		return new Slf4jLogger();
+	}
+
+	@Bean
+	RestClientCustomizer restClientCustomizer() {
+		return (builder) -> builder.defaultHeader("User-Agent", "central-publish-action");
 	}
 
 	private boolean runsOnGithubActions() {

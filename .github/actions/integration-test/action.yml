@@ -13,6 +13,9 @@ inputs:
   token:
     description: 'Token'
     required: true
+  await-artifact:
+    description: 'Artifact in Maven coordinates to wait for'
+    required: true
 runs:
   using: composite
   steps:
@@ -25,11 +28,13 @@ runs:
       uses: ./
       with:
         base-uri: 'http://${{ inputs.sonatype-portal-mock-host }}:${{ inputs.sonatype-portal-mock-port }}'
+        maven-central-base-uri: 'http://${{ inputs.sonatype-portal-mock-host }}:${{ inputs.sonatype-portal-mock-port }}/debug/published-deployments/file/'
         token-name: ${{ inputs.token-name }}
         token: ${{ inputs.token }}
         publishing-type: 'automatic'
         dir: 'integration-test/bundle/'
         sleep-between-retries: '1s'
+        await-artifact: '${{ inputs.await-artifact }}'
     - name: Download bundle
       shell: bash
       # This doesn't run in a actions container, so we have to use localhost to access the Sonatype portal mock

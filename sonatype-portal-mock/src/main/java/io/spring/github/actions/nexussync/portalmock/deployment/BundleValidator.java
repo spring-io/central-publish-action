@@ -40,7 +40,7 @@ import org.springframework.util.StringUtils;
 @Component
 class BundleValidator {
 
-	void validate(Path bundle) {
+	Set<String> validate(Path bundle) {
 		if (!Files.exists(bundle)) {
 			throw new DeploymentFailedException("Bundle at '%s' doesn't exist".formatted(bundle.toAbsolutePath()));
 		}
@@ -51,6 +51,7 @@ class BundleValidator {
 			for (String artifact : artifacts) {
 				checkArtifact(zipFile, artifact, entries);
 			}
+			return Set.copyOf(entries.keySet());
 		}
 		catch (ZipException ex) {
 			throw new DeploymentFailedException("Unable to read zip file at '%s'".formatted(bundle.toAbsolutePath()),

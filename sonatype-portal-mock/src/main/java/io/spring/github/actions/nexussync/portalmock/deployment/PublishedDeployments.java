@@ -16,7 +16,6 @@
 
 package io.spring.github.actions.nexussync.portalmock.deployment;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,25 +31,29 @@ import org.springframework.stereotype.Component;
 @Component
 class PublishedDeployments {
 
-	private final Map<String, Path> deployments = new ConcurrentHashMap<>();
+	private final Map<String, Deployment> deployments = new ConcurrentHashMap<>();
 
-	void add(String id, Path bundle) {
-		this.deployments.put(id, bundle);
+	void add(String id, Deployment deployment) {
+		this.deployments.put(id, deployment);
 	}
 
-	List<PublishedDeployment> list() {
-		return this.deployments.entrySet()
-			.stream()
-			.map((e) -> new PublishedDeployment(e.getKey(), e.getValue().toAbsolutePath()))
-			.toList();
+	List<Deployment> list() {
+		return List.copyOf(this.deployments.values());
 	}
 
 	@Nullable
-	Path get(String id) {
+	Deployment get(String id) {
 		return this.deployments.get(id);
 	}
 
-	record PublishedDeployment(String id, Path bundle) {
+	@Nullable
+	Deployment findWithFile(String file) {
+		for (Deployment deployment : this.deployments.values()) {
+			if (deployment.getFiles().contains(file)) {
+				return deployment;
+			}
+		}
+		return null;
 	}
 
 }

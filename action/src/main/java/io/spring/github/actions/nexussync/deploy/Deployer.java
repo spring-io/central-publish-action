@@ -28,6 +28,8 @@ import io.spring.github.actions.nexussync.sonatype.Deployment;
 import io.spring.github.actions.nexussync.sonatype.PublishingType;
 import io.spring.github.actions.nexussync.system.Logger;
 
+import org.springframework.lang.Nullable;
+
 /**
  * Deployer for deploying to the Sontype Central Portal.
  *
@@ -45,15 +47,19 @@ public class Deployer {
 
 	private final CentralPortalApi centralPortalApi;
 
+	private final ArtifactAwaiter artifactAwaiter;
+
 	private final Path root;
 
 	private final PublishingType publishingType;
 
 	private final boolean dropDeploymentOnFailure;
 
+	private final @Nullable Coordinates awaitArtifact;
+
 	Deployer(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
-			boolean dropDeploymentOnFailure) {
+			ArtifactAwaiter artifactAwaiter, boolean dropDeploymentOnFailure, @Nullable Coordinates awaitArtifact) {
 		this.logger = logger;
 		this.root = root;
 		this.publishingType = publishingType;
@@ -61,7 +67,15 @@ public class Deployer {
 		this.checksumCreator = checksumCreator;
 		this.bundleCreator = bundler;
 		this.centralPortalApi = centralPortalApi;
+		this.artifactAwaiter = artifactAwaiter;
 		this.dropDeploymentOnFailure = dropDeploymentOnFailure;
+		this.awaitArtifact = awaitArtifact;
+	}
+
+	public void validate() {
+		if (this.awaitArtifact != null && this.publishingType != PublishingType.AUTOMATIC) {
+			throw new IllegalStateException("Await artifact can only be used if publishing type is automatic");
+		}
 	}
 
 	public Result deploy() {
@@ -104,6 +118,10 @@ public class Deployer {
 					"Publishing type USER_MANAGED should only have states FAILED or VALIDATED, but got PUBLISHED");
 		}
 		this.logger.log("Deployment '{}' successfully published", deployment.getId());
+		if (this.awaitArtifact != null) {
+			this.logger.log("Waiting for artifact to appear");
+			this.artifactAwaiter.await(this.awaitArtifact);
+		}
 		return Result.SUCCESS;
 	}
 

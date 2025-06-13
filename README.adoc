@@ -15,8 +15,10 @@ This action can be used to deploy artifacts to the Sonatype Central Portal.
 
 === Optional Inputs
 
-- `base-uri`: Base URL of the Sonatype Central Portal.
+- `base-uri`: Base URI of the Sonatype Central Portal.
 Defaults to `https://central.sonatype.com`.
+- `maven-central-base-uri`: Base URI of Maven Central.
+Defaults to `https://repo.maven.apache.org/maven2/`.
 - `publishing-type`: https://central.sonatype.org/publish/publish-portal-api/#uploading-a-deployment-bundle[Publishing type] of the artifacts.
 Can be `automatic` or `user_managed`.
 Defaults to `automatic`.
@@ -28,6 +30,8 @@ Defaults to `true`.
 Defaults to `30m`.
 - `sleep-between-retries`: Duration between deployment status retries.
 Defaults to `1m`.
+- `await-artifact`: Artifact in Maven coordinates to wait for.
+Defaults to ``.
 
 === Minimal Example
 

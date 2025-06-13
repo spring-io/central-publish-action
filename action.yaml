@@ -2,8 +2,12 @@ name: 'Nexus Sync'
 description: 'Publishes artifacts on Sonatype Central Portal'
 inputs:
   base-uri:
-    description: 'Token name for authentication with the Central Portal'
+    description: 'Base URI of the Central Portal'
     default: 'https://central.sonatype.com'
+    required: false
+  maven-central-base-uri:
+    description: 'Base URI of Maven Central'
+    default: 'https://repo.maven.apache.org/maven2/'
     required: false
   token-name:
     description: 'Token name for authentication with the Central Portal'
@@ -31,12 +35,17 @@ inputs:
     description: 'Duration between deployment status retries'
     required: false
     default: '1m'
+  await-artifact:
+    description: 'Artifact in Maven coordinates to wait for'
+    required: false
+    default: ''
 
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - --centralportal.base-uri=${{ inputs.base-uri }}
+    - --centralportal.maven-central-base-uri=${{ inputs.base-uri }}
     - --centralportal.directory=${{ inputs.dir }}
     - --centralportal.token.name=${{ inputs.token-name }}
     - --centralportal.token.value=${{ inputs.token }}
@@ -44,3 +53,4 @@ runs:
     - --centralportal.deployment.drop-on-failure=${{ inputs.drop-on-failure }}
     - --centralportal.deployment.timeout=${{ inputs.timeout }}
     - --centralportal.deployment.sleep-between-retries=${{ inputs.sleep-between-retries }}
+    - --centralportal.deployment.await-artifact=${{ inputs.await-artifact }}

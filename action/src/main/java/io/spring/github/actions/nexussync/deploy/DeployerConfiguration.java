@@ -27,6 +27,9 @@ import io.spring.github.actions.nexussync.system.Logger;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
 
 /**
  * Configuration for deployment beans.
@@ -39,10 +42,28 @@ class DeployerConfiguration {
 
 	@Bean
 	Deployer deployer(NexusSyncProperties properties, Logger logger, FileScanner fileScanner,
-			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi) {
+			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
+			ArtifactAwaiter artifactAwaiter) {
 		NexusSyncProperties.Deployment deployment = properties.getDeployment();
 		return new Deployer(logger, properties.getDirectoryAsPath(), getPublishingType(deployment), fileScanner,
-				checksumCreator, bundler, centralPortalApi, deployment.isDropOnFailure());
+				checksumCreator, bundler, centralPortalApi, artifactAwaiter, deployment.isDropOnFailure(),
+				getAwaitArtifact(deployment));
+	}
+
+	@Bean
+	ArtifactAwaiter artifactAwaiter(NexusSyncProperties properties, Logger logger,
+			RestClient.Builder restClientBuilder) {
+		return new ArtifactAwaiter(logger, properties.getDeployment().getTimeout(),
+				properties.getDeployment().getSleepBetweenRetries(), properties.getMavenCentralBaseUri(),
+				restClientBuilder);
+	}
+
+	private @Nullable Coordinates getAwaitArtifact(NexusSyncProperties.Deployment properties) {
+		String awaitArtifact = properties.getAwaitArtifact();
+		if (!StringUtils.hasLength(awaitArtifact)) {
+			return null;
+		}
+		return Coordinates.parse(awaitArtifact);
 	}
 
 	private PublishingType getPublishingType(NexusSyncProperties.Deployment properties) {

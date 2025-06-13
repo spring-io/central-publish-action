@@ -16,16 +16,13 @@
 
 package io.spring.github.actions.nexussync.portalmock.deployment;
 
-import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,11 +66,6 @@ class DeploymentController {
 		StatusResponse response = new StatusResponse(deployment.getId(), deployment.getName(),
 				deployment.getStatus().name(), deployment.getPurls(), errors);
 		return ResponseEntity.ok(response);
-	}
-
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private record StatusResponse(String deploymentId, String deploymentName, String deploymentState,
-			List<String> purls, @Nullable Map<String, String> errors) {
 	}
 
 }

@@ -70,7 +70,6 @@ class CentralPortalApiImpl implements CentralPortalApi {
 		this.sleepBetweenRetries = sleepBetweenRetries;
 		this.restClient = restClientBuilder.baseUrl(baseUri)
 			.defaultHeader("Accept", "application/json")
-			.defaultHeader("User-Agent", "central-publish-action")
 			.defaultHeader("Authorization", createAuthorizationHeader(tokenName, token))
 			.build();
 	}

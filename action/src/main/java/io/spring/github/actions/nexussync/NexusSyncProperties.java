@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -38,6 +39,9 @@ public class NexusSyncProperties {
 
 	@NotNull
 	private URI baseUri = URI.create("https://central.sonatype.com");
+
+	@NotNull
+	private URI mavenCentralBaseUri = URI.create("https://repo.maven.apache.org/maven2/");
 
 	@Valid
 	private final Token token = new Token();
@@ -57,6 +61,14 @@ public class NexusSyncProperties {
 
 	public void setBaseUri(URI baseUri) {
 		this.baseUri = baseUri;
+	}
+
+	public URI getMavenCentralBaseUri() {
+		return this.mavenCentralBaseUri;
+	}
+
+	public void setMavenCentralBaseUri(URI mavenCentralBaseUri) {
+		this.mavenCentralBaseUri = mavenCentralBaseUri;
 	}
 
 	public Token getToken() {
@@ -137,6 +149,9 @@ public class NexusSyncProperties {
 
 		private Duration sleepBetweenRetries = Duration.ofMinutes(1);
 
+		@Nullable
+		private String awaitArtifact;
+
 		public PublishingType getPublishingType() {
 			return this.publishingType;
 		}
@@ -167,6 +182,15 @@ public class NexusSyncProperties {
 
 		public void setSleepBetweenRetries(Duration sleepBetweenRetries) {
 			this.sleepBetweenRetries = sleepBetweenRetries;
+		}
+
+		@Nullable
+		public String getAwaitArtifact() {
+			return this.awaitArtifact;
+		}
+
+		public void setAwaitArtifact(@Nullable String awaitArtifact) {
+			this.awaitArtifact = awaitArtifact;
 		}
 
 	}
