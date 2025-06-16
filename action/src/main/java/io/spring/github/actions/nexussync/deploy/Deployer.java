@@ -69,7 +69,7 @@ public class Deployer {
 		if (files.isEmpty()) {
 			throw new IllegalStateException("No files found in directory '%s'".formatted(this.root));
 		}
-		this.logger.log("Found {} files, creating checksums...", files.size());
+		this.logger.log("Found {} files, creating checksums ...", files.size());
 		FileSet checksums = this.checksumCreator.createChecksums(files);
 		files = files.plus(checksums);
 		this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
