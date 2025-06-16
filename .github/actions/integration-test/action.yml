@@ -34,6 +34,7 @@ runs:
         publishing-type: 'automatic'
         dir: 'integration-test/bundle/'
         sleep-between-retries: '1s'
+        timeout: '1m'
         await-artifact: '${{ inputs.await-artifact }}'
     - name: Download bundle
       shell: bash
