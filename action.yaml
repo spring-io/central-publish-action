@@ -45,7 +45,7 @@ runs:
   image: 'Dockerfile'
   args:
     - --centralportal.base-uri=${{ inputs.base-uri }}
-    - --centralportal.maven-central-base-uri=${{ inputs.base-uri }}
+    - --centralportal.maven-central-base-uri=${{ inputs.maven-central-base-uri }}
     - --centralportal.directory=${{ inputs.dir }}
     - --centralportal.token.name=${{ inputs.token-name }}
     - --centralportal.token.value=${{ inputs.token }}
