@@ -3,6 +3,9 @@ build/
 
 !.github/actions/build
 
+### Application ###
+nexus/
+
 ### STS ###
 .apt_generated
 .classpath

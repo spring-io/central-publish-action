@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright 2025-2025 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run action" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <additionalParameters>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.base-uri" />
+        <option name="value" value="http://localhost:8080/" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.deployment.await-artifact" />
+        <option name="value" value="io.github.mhalbritter:sonatype-central-portal-test:0.0.5" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.token.name" />
+        <option name="value" value="token-name" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.token.value" />
+        <option name="value" value="token" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.maven-central-base-uri" />
+        <option name="value" value="http://localhost:8080/debug/published-deployments/file/" />
+      </param>
+      <param>
+        <option name="enabled" value="true" />
+        <option name="name" value="centralportal.checksum.fail-on-existing-checksums" />
+        <option name="value" value="false" />
+      </param>
+    </additionalParameters>
+    <module name="central-publish-action.action.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.spring.github.actions.centralpublish.CentralPublish" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
