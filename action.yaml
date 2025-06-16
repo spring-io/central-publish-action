@@ -1,4 +1,4 @@
-name: 'Nexus Sync'
+name: 'Central Publish'
 description: 'Publishes artifacts on Sonatype Central Portal'
 inputs:
   base-uri:
