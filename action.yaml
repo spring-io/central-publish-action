@@ -39,6 +39,10 @@ inputs:
     description: 'Artifact in Maven coordinates to wait for'
     required: false
     default: ''
+  fail-on-existing-checksums:
+    description: 'Whether to fail on existing checksums'
+    required: false
+    default: 'true'
 
 runs:
   using: 'docker'
@@ -54,3 +58,4 @@ runs:
     - --centralportal.deployment.timeout=${{ inputs.timeout }}
     - --centralportal.deployment.sleep-between-retries=${{ inputs.sleep-between-retries }}
     - --centralportal.deployment.await-artifact=${{ inputs.await-artifact }}
+    - --centralportal.checksum.fail-on-existing-checksums=${{ inputs.fail-on-existing-checksums }}

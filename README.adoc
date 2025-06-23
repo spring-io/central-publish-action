@@ -32,6 +32,8 @@ Defaults to `30m`.
 Defaults to `1m`.
 - `await-artifact`: Artifact in Maven coordinates to wait for.
 Defaults to ``.
+- `fail-on-existing-checksums`: Whether to fail on existing checksums.
+Defaults to `true`.
 
 === Minimal Example
 
