@@ -145,7 +145,7 @@ public class CentralPublishProperties {
 
 		private boolean dropOnFailure = true;
 
-		private Duration timeout = Duration.ofMinutes(30);
+		private Duration timeout = Duration.ofHours(1);
 
 		private Duration sleepBetweenRetries = Duration.ofMinutes(1);
 
