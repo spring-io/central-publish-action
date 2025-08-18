@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestClient;
 
@@ -175,7 +176,12 @@ class CentralPortalApiImpl implements CentralPortalApi {
 				}
 				catch (DeploymentNotFoundException ex) {
 					// Sometimes Sonatype returns 404 for newly created deployments
-					this.logger.debug("Got 404 while checking status");
+					this.logger.debug(ex.getMessage());
+					sleep();
+					continue;
+				}
+				catch (InternalServerErrorException ex) {
+					this.logger.log(ex.getMessage());
 					sleep();
 					continue;
 				}
@@ -216,8 +222,13 @@ class CentralPortalApiImpl implements CentralPortalApi {
 			return this.restClient.post()
 				.uri("/api/v1/publisher/status?id={deploymentId}", this.deploymentId)
 				.retrieve()
-				.onStatus(this::is404, (res, req) -> {
-					throw new DeploymentNotFoundException();
+				.onStatus(this::is404, (req, res) -> {
+					throw new DeploymentNotFoundException(res.getStatusCode(), res.getStatusText(),
+							StreamUtils.copyToString(res.getBody(), StandardCharsets.UTF_8));
+				})
+				.onStatus(HttpStatusCode::is5xxServerError, (req, res) -> {
+					throw new InternalServerErrorException(res.getStatusCode(), res.getStatusText(),
+							StreamUtils.copyToString(res.getBody(), StandardCharsets.UTF_8));
 				})
 				.body(DeploymentStatusDto.class);
 		}
@@ -242,6 +253,21 @@ class CentralPortalApiImpl implements CentralPortalApi {
 
 			@Serial
 			private static final long serialVersionUID = 1L;
+
+			DeploymentNotFoundException(HttpStatusCode statusCode, String statusText, String body) {
+				super("Got %d '%s' while checking status. Body:\n%s".formatted(statusCode.value(), statusText, body));
+			}
+
+		}
+
+		private static final class InternalServerErrorException extends RuntimeException {
+
+			@Serial
+			private static final long serialVersionUID = 1L;
+
+			InternalServerErrorException(HttpStatusCode statusCode, String statusText, String body) {
+				super("Got %d '%s' while checking status. Body:\n%s".formatted(statusCode.value(), statusText, body));
+			}
 
 		}
 
