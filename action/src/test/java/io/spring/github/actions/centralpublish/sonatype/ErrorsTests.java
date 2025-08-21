@@ -34,7 +34,31 @@ class ErrorsTests {
 	void shouldDetectAlreadyExistsError() {
 		Errors errors = new Errors(Map.of("pkg:maven/com.example/example-artifact@0.0.1",
 				List.of("Component with package url: 'pkg:maven/com.example/example-artifact@0.0.1' already exists")));
-		assertThat(errors.hasAlreadyExistsError()).isTrue();
+		assertThat(errors.hasOnlyAlreadyExistsError()).isTrue();
+	}
+
+	@Test
+	void shouldNotDetectAlreadyExistsErrorIfThereIsADifferentError() {
+		Errors errors = new Errors(Map.of("pkg:maven/com.example/example-artifact@0.0.1",
+				List.of("Component with package url: 'pkg:maven/com.example/example-artifact@0.0.1' already exists"),
+				"pkg:maven/com.example/example-artifact@0.0.2",
+				List.of("Something else is wrong with component with package url: 'pkg:maven/com.example/example-artifact@0.0.2'")));
+		assertThat(errors.hasOnlyAlreadyExistsError()).isFalse();
+	}
+
+	@Test
+	void shouldHavePrettyToString() {
+		Errors errors = new Errors(Map.of("pkg:maven/com.example/example-artifact@0.0.1",
+				List.of("Component with package url: 'pkg:maven/com.example/example-artifact@0.0.1' already exists"),
+				"pkg:maven/com.example/example-artifact@0.0.2",
+				List.of("Something else is wrong with component with package url: 'pkg:maven/com.example/example-artifact@0.0.2'")));
+		assertThat(errors).hasToString(
+				"""
+						- pkg:maven/com.example/example-artifact@0.0.1:
+						  - Component with package url: 'pkg:maven/com.example/example-artifact@0.0.1' already exists
+						- pkg:maven/com.example/example-artifact@0.0.2:
+						  - Something else is wrong with component with package url: 'pkg:maven/com.example/example-artifact@0.0.2'
+						""");
 	}
 
 }

@@ -19,6 +19,7 @@ package io.spring.github.actions.centralpublish.sonatype;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.lang.Nullable;
 
@@ -32,33 +33,62 @@ public class Errors {
 	private final Map<Object, Object> errors;
 
 	Errors(@Nullable Map<Object, Object> errors) {
-		this.errors = (errors != null) ? errors : Collections.emptyMap();
+		this.errors = (errors != null) ? new TreeMap<>(errors) : Collections.emptyMap();
 	}
 
 	/**
-	 * Whether the errors contain a 'Deployment already exists' error.
-	 * @return whether the errors contain a 'Deployment already exists' error
+	 * Whether the errors contain only 'Deployment already exists' errors.
+	 * @return whether the errors contain only 'Deployment already exists' errors
 	 */
 	@SuppressWarnings("unchecked")
-	public boolean hasAlreadyExistsError() {
+	public boolean hasOnlyAlreadyExistsError() {
+		if (this.errors.isEmpty()) {
+			return false;
+		}
 		for (Map.Entry<Object, Object> entry : this.errors.entrySet()) {
 			if (entry.getKey() instanceof String key && entry.getValue() instanceof List) {
-				List<String> values = (List<String>) entry.getValue();
-				if (values.size() == 1) {
-					String text = values.getFirst();
-					String expectedText = "Component with package url: '%s' already exists".formatted(key);
-					if (text != null && text.equals(expectedText)) {
-						return true;
+				List<Object> values = (List<Object>) entry.getValue();
+				if (values.size() != 1) {
+					return false;
+				}
+				if (values.getFirst() instanceof String value) {
+					if (!isAlreadyExistsError(key, value)) {
+						return false;
 					}
 				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
 			}
 		}
-		return false;
+		return true;
+	}
+
+	private boolean isAlreadyExistsError(String pkg, @Nullable String text) {
+		String expectedText = "Component with package url: '%s' already exists".formatted(pkg);
+		return text != null && text.equals(expectedText);
 	}
 
 	@Override
 	public String toString() {
-		return this.errors.toString();
+		StringBuilder builder = new StringBuilder();
+		for (Map.Entry<Object, Object> entry : this.errors.entrySet()) {
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			if (value instanceof Iterable<?> values) {
+				builder.append("- %s:%n".formatted(key));
+				for (Object v : values) {
+					builder.append("  - %s%n".formatted(v));
+				}
+			}
+			else {
+				builder.append("- %s: %s%n".formatted(key, value));
+			}
+		}
+		return builder.toString();
 	}
 
 	static Errors empty() {

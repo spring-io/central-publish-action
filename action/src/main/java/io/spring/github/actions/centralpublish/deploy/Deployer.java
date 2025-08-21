@@ -132,12 +132,13 @@ public class Deployer {
 
 	private Result deploymentFailed(Deployment deployment) {
 		Errors errors = deployment.getErrors();
-		if (this.ignoreAlreadyExistsError && errors.hasAlreadyExistsError()) {
+		if (this.ignoreAlreadyExistsError && errors.hasOnlyAlreadyExistsError()) {
 			this.logger.log("Deployment '{}' has already been deployed", deployment.getId());
 			dropDeployment(deployment);
 			return Result.SUCCESS;
 		}
-		this.logger.error("Deployment '{}' failed: {}", deployment.getId(), errors);
+		this.logger.error("Deployment '{}' failed", deployment.getId());
+		this.logger.error("Errors:\n\n{}", errors);
 		dropDeployment(deployment);
 		return Result.FAILURE;
 	}
