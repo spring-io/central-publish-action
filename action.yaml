@@ -27,6 +27,10 @@ inputs:
     description: 'Whether the deployment should automatically be dropped on failure.'
     required: false
     default: 'true'
+  ignore-already-exists-error:
+    description: 'Whether the "Deployment already exists" error should be ignored'
+    required: false
+    default: 'false'
   timeout:
     description: 'Maximum duration to wait for a deployment to complete'
     required: false
@@ -55,6 +59,7 @@ runs:
     - --centralportal.token.value=${{ inputs.token }}
     - --centralportal.deployment.publishing-type=${{ inputs.publishing-type }}
     - --centralportal.deployment.drop-on-failure=${{ inputs.drop-on-failure }}
+    - --centralportal.deployment.ignore-already-exists-error=${{ inputs.ignore-already-exists-error }}
     - --centralportal.deployment.timeout=${{ inputs.timeout }}
     - --centralportal.deployment.sleep-between-retries=${{ inputs.sleep-between-retries }}
     - --centralportal.deployment.await-artifact=${{ inputs.await-artifact }}

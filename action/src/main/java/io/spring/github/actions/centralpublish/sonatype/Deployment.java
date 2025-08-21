@@ -16,8 +16,6 @@
 
 package io.spring.github.actions.centralpublish.sonatype;
 
-import org.springframework.lang.Nullable;
-
 /**
  * A deployment.
  *
@@ -43,8 +41,7 @@ public interface Deployment {
 	 * {@link #awaitFinalStatus()} has been called.
 	 * @return the errors
 	 */
-	@Nullable
-	String getErrors();
+	Errors getErrors();
 
 	/**
 	 * Awaits the final status of the deployment.

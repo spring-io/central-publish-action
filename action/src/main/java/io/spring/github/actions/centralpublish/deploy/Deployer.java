@@ -25,6 +25,7 @@ import io.spring.github.actions.centralpublish.file.FileScanner;
 import io.spring.github.actions.centralpublish.file.FileSet;
 import io.spring.github.actions.centralpublish.sonatype.CentralPortalApi;
 import io.spring.github.actions.centralpublish.sonatype.Deployment;
+import io.spring.github.actions.centralpublish.sonatype.Errors;
 import io.spring.github.actions.centralpublish.sonatype.PublishingType;
 import io.spring.github.actions.centralpublish.system.Logger;
 
@@ -55,11 +56,14 @@ public class Deployer {
 
 	private final boolean dropDeploymentOnFailure;
 
+	private final boolean ignoreAlreadyExistsError;
+
 	private final @Nullable Coordinates awaitArtifact;
 
 	Deployer(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
-			ArtifactAwaiter artifactAwaiter, boolean dropDeploymentOnFailure, @Nullable Coordinates awaitArtifact) {
+			ArtifactAwaiter artifactAwaiter, boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError,
+			@Nullable Coordinates awaitArtifact) {
 		this.logger = logger;
 		this.root = root;
 		this.publishingType = publishingType;
@@ -69,6 +73,7 @@ public class Deployer {
 		this.centralPortalApi = centralPortalApi;
 		this.artifactAwaiter = artifactAwaiter;
 		this.dropDeploymentOnFailure = dropDeploymentOnFailure;
+		this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
 		this.awaitArtifact = awaitArtifact;
 	}
 
@@ -126,12 +131,22 @@ public class Deployer {
 	}
 
 	private Result deploymentFailed(Deployment deployment) {
-		this.logger.error("Deployment '{}' failed: {}", deployment.getId(), deployment.getErrors());
+		Errors errors = deployment.getErrors();
+		if (this.ignoreAlreadyExistsError && errors.hasAlreadyExistsError()) {
+			this.logger.log("Deployment '{}' has already been deployed", deployment.getId());
+			dropDeployment(deployment);
+			return Result.SUCCESS;
+		}
+		this.logger.error("Deployment '{}' failed: {}", deployment.getId(), errors);
+		dropDeployment(deployment);
+		return Result.FAILURE;
+	}
+
+	private void dropDeployment(Deployment deployment) {
 		if (this.dropDeploymentOnFailure) {
 			this.logger.log("Dropping deployment");
 			deployment.drop();
 		}
-		return Result.FAILURE;
 	}
 
 	/**

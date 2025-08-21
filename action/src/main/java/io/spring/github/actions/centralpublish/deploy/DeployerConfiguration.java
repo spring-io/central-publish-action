@@ -47,7 +47,7 @@ class DeployerConfiguration {
 		CentralPublishProperties.Deployment deployment = properties.getDeployment();
 		return new Deployer(logger, properties.getDirectoryAsPath(), getPublishingType(deployment), fileScanner,
 				checksumCreator, bundler, centralPortalApi, artifactAwaiter, deployment.isDropOnFailure(),
-				getAwaitArtifact(deployment));
+				deployment.isIgnoreAlreadyExistsError(), getAwaitArtifact(deployment));
 	}
 
 	@Bean

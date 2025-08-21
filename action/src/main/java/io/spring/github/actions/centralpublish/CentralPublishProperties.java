@@ -149,6 +149,8 @@ public class CentralPublishProperties {
 
 		private Duration sleepBetweenRetries = Duration.ofMinutes(1);
 
+		private boolean ignoreAlreadyExistsError;
+
 		@Nullable
 		private String awaitArtifact;
 
@@ -191,6 +193,14 @@ public class CentralPublishProperties {
 
 		public void setAwaitArtifact(@Nullable String awaitArtifact) {
 			this.awaitArtifact = awaitArtifact;
+		}
+
+		public boolean isIgnoreAlreadyExistsError() {
+			return this.ignoreAlreadyExistsError;
+		}
+
+		public void setIgnoreAlreadyExistsError(boolean ignoreAlreadyExistsError) {
+			this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
 		}
 
 	}

@@ -157,12 +157,12 @@ class CentralPortalApiImpl implements CentralPortalApi {
 		}
 
 		@Override
-		public String getErrors() {
+		public Errors getErrors() {
 			Assert.notNull(this.finalStatus, "Call awaitFinalStatus() before calling getErrors()");
 			if (CollectionUtils.isEmpty(this.finalStatus.errors())) {
-				return null;
+				return Errors.empty();
 			}
-			return this.finalStatus.errors().toString();
+			return new Errors(this.finalStatus.errors());
 		}
 
 		@Override
