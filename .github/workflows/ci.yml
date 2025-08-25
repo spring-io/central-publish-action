@@ -13,7 +13,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Build
         uses: ./.github/actions/build
   build-and-publish-sonatype-portal-mock:
@@ -24,7 +24,7 @@ jobs:
       packages: write
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build Sonatype Portal Mock docker image
@@ -51,7 +51,7 @@ jobs:
           PORTALMOCK_DEPLOYMENT_DELAY_BETWEEN_STEPS: '10s'
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Integration test
         uses: ./.github/actions/integration-test
         with:
