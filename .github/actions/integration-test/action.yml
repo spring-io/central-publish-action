@@ -20,7 +20,7 @@ runs:
   using: composite
   steps:
     - name: Check out action
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Unzip artifacts to deploy
       shell: bash
       run: unzip integration-test/bundle.zip -d integration-test/bundle/
