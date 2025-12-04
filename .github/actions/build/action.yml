@@ -17,7 +17,7 @@ runs:
         distribution: 'liberica'
         java-version: 24
     - name: Check out code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Set up Gradle
       uses: gradle/actions/setup-gradle@06832c7b30a0129d7fb559bcc6e43d26f6374244
       with:
