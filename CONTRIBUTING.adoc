@@ -41,7 +41,7 @@ Other IDEs and tools with Gradle support should also work without issue.
 
 === Building from source
 
-To build the source you will need to install JDK 24.
+To build the source you will need to install JDK 25.
 The project is built with Gradle.
 Using the wrapper that is included in the project's source is strongly recommended.
 
