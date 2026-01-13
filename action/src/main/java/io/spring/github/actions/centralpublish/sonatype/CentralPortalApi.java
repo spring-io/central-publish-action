@@ -18,6 +18,8 @@ package io.spring.github.actions.centralpublish.sonatype;
 
 import io.spring.github.actions.centralpublish.bundle.Bundle;
 
+import org.springframework.lang.Nullable;
+
 /**
  * Client for Sonatype's Central Portal API.
  *
@@ -29,8 +31,10 @@ public interface CentralPortalApi {
 	 * Uploads the given bundle using the given publishing type.
 	 * @param bundle the bundle to upload
 	 * @param publishingType the publishing type
+	 * @param deploymentName the name of the deployment. If {@code null} or empty, a name
+	 * will be generated.
 	 * @return the deployment
 	 */
-	Deployment upload(Bundle bundle, PublishingType publishingType);
+	Deployment upload(Bundle bundle, PublishingType publishingType, @Nullable String deploymentName);
 
 }

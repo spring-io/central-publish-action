@@ -152,6 +152,9 @@ public class CentralPublishProperties {
 		private boolean ignoreAlreadyExistsError;
 
 		@Nullable
+		private String name;
+
+		@Nullable
 		private String awaitArtifact;
 
 		public PublishingType getPublishingType() {
@@ -201,6 +204,15 @@ public class CentralPublishProperties {
 
 		public void setIgnoreAlreadyExistsError(boolean ignoreAlreadyExistsError) {
 			this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
+		}
+
+		@Nullable
+		public String getName() {
+			return this.name;
+		}
+
+		public void setName(@Nullable String name) {
+			this.name = name;
 		}
 
 	}

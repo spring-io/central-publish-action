@@ -16,6 +16,9 @@ inputs:
   await-artifact:
     description: 'Artifact in Maven coordinates to wait for'
     required: true
+  deployment-name:
+    description: 'Name of the deployment'
+    required: true
 runs:
   using: composite
   steps:
@@ -36,7 +39,8 @@ runs:
         sleep-between-retries: '1s'
         timeout: '1m'
         await-artifact: '${{ inputs.await-artifact }}'
+        deployment-name: '${{ inputs.deployment-name }}'
     - name: Download bundle
       shell: bash
-      # This doesn't run in a actions container, so we have to use localhost to access the Sonatype portal mock
+      # This doesn't run in an actions container, so we have to use localhost to access the Sonatype portal mock
       run: wget localhost:${{ inputs.sonatype-portal-mock-port }}/debug/published-deployments/0 -o bundle.zip

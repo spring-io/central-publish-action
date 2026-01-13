@@ -34,11 +34,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestClient;
 
@@ -76,13 +78,15 @@ class CentralPortalApiImpl implements CentralPortalApi {
 	}
 
 	@Override
-	public Deployment upload(Bundle bundle, PublishingType publishingType) {
+	public Deployment upload(Bundle bundle, PublishingType publishingType, @Nullable String deploymentName) {
 		DataSize bundleSize = bundle.getSize();
 		if (bundleSize.compareTo(MAX_BUNDLE_SIZE) > 0) {
 			throw new IllegalStateException("Maximum bundle size is 1 GiB, but the bundle is %s".formatted(bundleSize));
 		}
 		MultiValueMap<String, Object> body = createBody(bundle);
-		String deploymentName = createDeploymentName();
+		if (!StringUtils.hasLength(deploymentName)) {
+			deploymentName = generateDeploymentName();
+		}
 		ResponseEntity<String> response = this.restClient.post()
 			.uri("/api/v1/publisher/upload?name={name}&publishingType={publishingType}", deploymentName,
 					publishingType.toApi())
@@ -101,7 +105,7 @@ class CentralPortalApiImpl implements CentralPortalApi {
 				this.sleepBetweenRetries);
 	}
 
-	private String createDeploymentName() {
+	private String generateDeploymentName() {
 		return "central-publish-action-" + this.clock.instant();
 	}
 

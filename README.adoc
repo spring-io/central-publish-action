@@ -36,6 +36,8 @@ Defaults to `1m`.
 Defaults to ``.
 - `fail-on-existing-checksums`: Whether to fail on existing checksums.
 Defaults to `true`.
+- `deployment-name`: Name of the deployment.
+Defaults to an auto-generated name.
 
 === Minimal Example
 

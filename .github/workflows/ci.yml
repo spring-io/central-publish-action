@@ -60,3 +60,4 @@ jobs:
           token-name: 'mrsmith'
           token: 'morpheus'
           await-artifact: 'io.github.mhalbritter:sonatype-central-portal-test:0.0.5'
+          deployment-name: 'test-deployment'

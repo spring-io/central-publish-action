@@ -24,7 +24,7 @@ inputs:
     required: false
     default: 'nexus'
   drop-on-failure:
-    description: 'Whether the deployment should automatically be dropped on failure.'
+    description: 'Whether the deployment should automatically be dropped on failure'
     required: false
     default: 'true'
   ignore-already-exists-error:
@@ -47,6 +47,10 @@ inputs:
     description: 'Whether to fail on existing checksums'
     required: false
     default: 'true'
+  deployment-name:
+    description: 'Name of the deployment'
+    required: false
+    default: ''
 
 runs:
   using: 'docker'
@@ -64,3 +68,4 @@ runs:
     - --centralportal.deployment.sleep-between-retries=${{ inputs.sleep-between-retries }}
     - --centralportal.deployment.await-artifact=${{ inputs.await-artifact }}
     - --centralportal.checksum.fail-on-existing-checksums=${{ inputs.fail-on-existing-checksums }}
+    - --centralportal.deployment.name=${{ inputs.deployment-name }}

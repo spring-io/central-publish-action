@@ -60,10 +60,12 @@ public class Deployer {
 
 	private final @Nullable Coordinates awaitArtifact;
 
+	private final @Nullable String deploymentName;
+
 	Deployer(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
 			ArtifactAwaiter artifactAwaiter, boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError,
-			@Nullable Coordinates awaitArtifact) {
+			@Nullable Coordinates awaitArtifact, @Nullable String deploymentName) {
 		this.logger = logger;
 		this.root = root;
 		this.publishingType = publishingType;
@@ -75,6 +77,7 @@ public class Deployer {
 		this.dropDeploymentOnFailure = dropDeploymentOnFailure;
 		this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
 		this.awaitArtifact = awaitArtifact;
+		this.deploymentName = deploymentName;
 	}
 
 	public void validate() {
@@ -94,7 +97,7 @@ public class Deployer {
 		this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
 		Bundle bundle = this.bundleCreator.createBundle(this.root, files);
 		this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());
-		Deployment deployment = this.centralPortalApi.upload(bundle, this.publishingType);
+		Deployment deployment = this.centralPortalApi.upload(bundle, this.publishingType, this.deploymentName);
 		this.logger.log("Bundle uploaded, resulting in deployment '{}'.", deployment.getId());
 		this.logger.log("Awaiting final status ...");
 		deployment.awaitFinalStatus();
