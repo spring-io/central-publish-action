@@ -45,7 +45,7 @@ Defaults to an auto-generated name.
 ----
 steps:
   - name: Deploy
-    uses: spring-io/central-publish-action@0c03960e9b16fdfe70e2443e1d5393cbc3a35622 # v0.3.0
+    uses: spring-io/central-publish-action@5ea05c77127404d89c374ac4cd17b6ec6b0e7293 # v0.4.0
     with:
       token-name: ${{ secrets.SONATYPE_TOKEN_NAME }}
       token: ${{ secrets.SONATYPE_TOKEN }}
@@ -60,7 +60,7 @@ This can be configured by passing through the value of the `ACTIONS_STEP_DEBUG` 
 ----
 steps:
   - name: Deploy
-    uses: spring-io/central-publish-action@0c03960e9b16fdfe70e2443e1d5393cbc3a35622 # v0.3.0
+    uses: spring-io/central-publish-action@5ea05c77127404d89c374ac4cd17b6ec6b0e7293 # v0.4.0
     env:
       ACTION_STEPS_DEBUG: ${{ secrets.ACTIONS_STEP_DEBUG }}
 ----
