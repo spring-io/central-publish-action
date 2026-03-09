@@ -1,4 +1,4 @@
-FROM gradle:9.2.1-jdk25-alpine AS build
+FROM gradle:9.4.0-jdk25-alpine AS build
 COPY . /app/
 RUN cd /app && gradle -Dorg.gradle.welcome=never --no-daemon :action:bootJar
 
