@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
     id "checkstyle"
     id "io.spring.javaformat" version "$javaFormatVersion"
@@ -58,7 +60,7 @@ dependencies {
     checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
     checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 
-    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
+    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
 
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -71,7 +73,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
 
