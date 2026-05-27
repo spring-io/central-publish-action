@@ -23,9 +23,9 @@ import java.time.Duration;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -151,11 +151,9 @@ public class CentralPublishProperties {
 
 		private boolean ignoreAlreadyExistsError;
 
-		@Nullable
-		private String name;
+		private @Nullable String name;
 
-		@Nullable
-		private String awaitArtifact;
+		private @Nullable String awaitArtifact;
 
 		public PublishingType getPublishingType() {
 			return this.publishingType;
@@ -189,8 +187,7 @@ public class CentralPublishProperties {
 			this.sleepBetweenRetries = sleepBetweenRetries;
 		}
 
-		@Nullable
-		public String getAwaitArtifact() {
+		public @Nullable String getAwaitArtifact() {
 			return this.awaitArtifact;
 		}
 
@@ -206,8 +203,7 @@ public class CentralPublishProperties {
 			this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
 		}
 
-		@Nullable
-		public String getName() {
+		public @Nullable String getName() {
 			return this.name;
 		}
 

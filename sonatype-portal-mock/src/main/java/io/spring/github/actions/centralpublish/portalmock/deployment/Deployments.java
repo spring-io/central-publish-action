@@ -27,10 +27,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.spring.github.actions.centralpublish.portalmock.id.IdFactory;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.lang.Nullable;
 
 /**
  * Manages deployments.
@@ -117,8 +117,7 @@ class Deployments {
 		this.deployments.computeIfPresent(id, (k, deployment) -> deployment.withFiles(files));
 	}
 
-	@Nullable
-	Deployment find(String id) {
+	@Nullable Deployment find(String id) {
 		return this.deployments.get(id);
 	}
 

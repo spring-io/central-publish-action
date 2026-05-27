@@ -23,11 +23,11 @@ import io.spring.github.actions.centralpublish.file.FileScanner;
 import io.spring.github.actions.centralpublish.sonatype.CentralPortalApi;
 import io.spring.github.actions.centralpublish.sonatype.PublishingType;
 import io.spring.github.actions.centralpublish.system.Logger;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 

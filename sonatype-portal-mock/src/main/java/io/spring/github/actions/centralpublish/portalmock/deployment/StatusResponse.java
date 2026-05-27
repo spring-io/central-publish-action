@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record StatusResponse(String deploymentId, String deploymentName, String deploymentState, List<String> purls,

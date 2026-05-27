@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A deployment.
@@ -86,8 +86,7 @@ class Deployment {
 		return this.publishingType;
 	}
 
-	@Nullable
-	String getErrors() {
+	@Nullable String getErrors() {
 		return this.errors;
 	}
 

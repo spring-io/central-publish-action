@@ -17,8 +17,7 @@
 package io.spring.github.actions.centralpublish.sonatype;
 
 import io.spring.github.actions.centralpublish.bundle.Bundle;
-
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Client for Sonatype's Central Portal API.

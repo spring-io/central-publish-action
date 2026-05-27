@@ -21,7 +21,7 @@ import java.time.Clock;
 import io.spring.github.actions.centralpublish.CentralPublishProperties;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.client.RestClientCustomizer;
+import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

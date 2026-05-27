@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,13 +42,11 @@ class PublishedDeployments {
 		return List.copyOf(this.deployments.values());
 	}
 
-	@Nullable
-	Deployment get(String id) {
+	@Nullable Deployment get(String id) {
 		return this.deployments.get(id);
 	}
 
-	@Nullable
-	Deployment findWithFile(String file) {
+	@Nullable Deployment findWithFile(String file) {
 		for (Deployment deployment : this.deployments.values()) {
 			if (deployment.getFiles().contains(file)) {
 				return deployment;

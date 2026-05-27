@@ -28,8 +28,7 @@ import io.spring.github.actions.centralpublish.sonatype.Deployment;
 import io.spring.github.actions.centralpublish.sonatype.Errors;
 import io.spring.github.actions.centralpublish.sonatype.PublishingType;
 import io.spring.github.actions.centralpublish.system.Logger;
-
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deployer for deploying to the Sontype Central Portal.
