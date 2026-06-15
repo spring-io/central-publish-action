@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
-
-include 'action', 'library', 'sonatype-portal-mock'
+/**
+ * Pluggable system abstractions.
+ */
+package io.spring.centralpublish.log;

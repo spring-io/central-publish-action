@@ -14,6 +14,32 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.checksum;
 
-include 'action', 'library', 'sonatype-portal-mock'
+import java.nio.file.Path;
+
+public enum ChecksumPolicy {
+
+	/**
+	 * Fails if existing checksums are found.
+	 */
+	FAIL_ON_EXISTING {
+		@Override
+		void checksumExists(Path checksumFile) {
+			throw new IllegalStateException(
+					"Checksum file '%s' already exists'".formatted(checksumFile.toAbsolutePath()));
+		}
+	},
+	/**
+	 * Overwrite existing checksums.
+	 */
+	OVERWRITE_EXISTING {
+		@Override
+		void checksumExists(Path checksumFile) {
+			// noop
+		}
+	};
+
+	abstract void checksumExists(Path checksumFile);
+
+}

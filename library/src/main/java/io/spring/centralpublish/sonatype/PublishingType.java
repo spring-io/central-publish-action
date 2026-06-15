@@ -14,6 +14,33 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.sonatype;
 
-include 'action', 'library', 'sonatype-portal-mock'
+/**
+ * Publishing type.
+ *
+ * @author Moritz Halbritter
+ */
+public enum PublishingType {
+
+	/**
+	 * Automatic publishing.
+	 */
+	AUTOMATIC,
+	/**
+	 * Publishing, which requires a manual step at the end.
+	 */
+	USER_MANAGED;
+
+	/**
+	 * Converts this publishing API to the value of the query parameter in the API.
+	 * @return the query parameter value
+	 */
+	String toApi() {
+		return switch (this) {
+			case AUTOMATIC -> "AUTOMATIC";
+			case USER_MANAGED -> "USER_MANAGED";
+		};
+	}
+
+}

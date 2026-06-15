@@ -14,6 +14,30 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.file;
 
-include 'action', 'library', 'sonatype-portal-mock'
+import java.nio.file.Path;
+
+/**
+ * Scans for files.
+ *
+ * @author Moritz Halbritter
+ */
+public interface FileScanner {
+
+	/**
+	 * Scans the given root folder and all subfolders for files.
+	 * @param root the root folder
+	 * @return the found files
+	 */
+	FileSet scan(Path root);
+
+	/**
+	 * Creates a new {@link FileScanner}.
+	 * @return the created {@link FileScanner}
+	 */
+	static FileScanner create() {
+		return new FileScannerImpl();
+	}
+
+}

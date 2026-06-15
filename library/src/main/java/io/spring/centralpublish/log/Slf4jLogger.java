@@ -14,6 +14,32 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.log;
 
-include 'action', 'library', 'sonatype-portal-mock'
+import org.slf4j.LoggerFactory;
+
+/**
+ * A {@link Logger} which logs through SLF4J.
+ *
+ * @author Moritz Halbritter
+ */
+class Slf4jLogger implements Logger {
+
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Slf4jLogger.class);
+
+	@Override
+	public void log(String message, Object... args) {
+		LOGGER.info(message, args);
+	}
+
+	@Override
+	public void error(String message, Object... args) {
+		LOGGER.error(message, args);
+	}
+
+	@Override
+	public void debug(String message, Object... args) {
+		LOGGER.debug(message, args);
+	}
+
+}

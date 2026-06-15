@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.deploy;
 
-include 'action', 'library', 'sonatype-portal-mock'
+import java.io.Serial;
+
+/**
+ * Exception which is thrown if something went wrong while awaiting an artifact.
+ *
+ * @author Moritz Halbritter
+ */
+public class ArtifactAwaitException extends RuntimeException {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	ArtifactAwaitException(String message) {
+		super(message);
+	}
+
+}

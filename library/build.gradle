@@ -1,0 +1,58 @@
+/*
+ * Copyright 2025 - present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    id "checkstyle"
+    id "io.spring.javaformat" version "$javaFormatVersion"
+    id "java-library"
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+checkstyle {
+    toolVersion = "$checkstyleToolVersion"
+}
+
+dependencies {
+    checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
+    checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
+
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+    implementation("org.slf4j:slf4j-api")
+    implementation("org.springframework:spring-core")
+    implementation("org.springframework:spring-web")
+
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs = ["-parameters", "-Xlint:all"]
+}

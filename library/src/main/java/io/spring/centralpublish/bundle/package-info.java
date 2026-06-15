@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
-
-include 'action', 'library', 'sonatype-portal-mock'
+/**
+ * Classes related to deployment bundles.
+ *
+ * @author Moritz Halbritter
+ */
+package io.spring.centralpublish.bundle;

@@ -14,6 +14,33 @@
  * limitations under the License.
  */
 
-rootProject.name = 'central-publish-action'
+package io.spring.centralpublish.bundle;
 
-include 'action', 'library', 'sonatype-portal-mock'
+import java.nio.file.Path;
+
+import io.spring.centralpublish.file.FileSet;
+
+/**
+ * Creates bundles.
+ *
+ * @author Moritz Halbritter
+ */
+public interface Bundler {
+
+	/**
+	 * Creates a bundle from the given files in the given root directory.
+	 * @param root the root directory
+	 * @param files the file
+	 * @return the created bundle
+	 */
+	Bundle createBundle(Path root, FileSet files);
+
+	/**
+	 * Creates a new {@link Bundler}.
+	 * @return the {@link Bundler}
+	 */
+	static Bundler create() {
+		return new BundlerImpl();
+	}
+
+}

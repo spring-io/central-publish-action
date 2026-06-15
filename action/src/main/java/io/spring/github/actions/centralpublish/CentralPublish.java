@@ -16,7 +16,7 @@
 
 package io.spring.github.actions.centralpublish;
 
-import io.spring.github.actions.centralpublish.deploy.Deployer;
+import io.spring.centralpublish.deploy.Deployer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,7 +34,6 @@ public class CentralPublish {
 		Deployer.Result result;
 		try (ConfigurableApplicationContext app = SpringApplication.run(CentralPublish.class, args)) {
 			Deployer deployer = app.getBean(Deployer.class);
-			deployer.validate();
 			result = deployer.deploy();
 		}
 		int status = switch (result) {

@@ -27,9 +27,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import io.spring.centralpublish.bundle.Bundle;
+import io.spring.centralpublish.sonatype.Deployment;
 import io.spring.github.actions.centralpublish.CentralPublish;
-import io.spring.github.actions.centralpublish.bundle.Bundle;
-import io.spring.github.actions.centralpublish.sonatype.Deployment;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
