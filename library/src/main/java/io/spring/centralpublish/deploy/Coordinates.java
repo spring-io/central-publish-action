@@ -21,8 +21,8 @@ import org.springframework.util.Assert;
 /**
  * Dependency coordinates.
  *
- * @param artifact the artifact
  * @param group the group
+ * @param artifact the artifact
  * @param version the version
  * @author Moritz Halbritter
  */

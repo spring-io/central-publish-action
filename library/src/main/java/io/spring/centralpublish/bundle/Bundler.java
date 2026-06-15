@@ -30,7 +30,7 @@ public interface Bundler {
 	/**
 	 * Creates a bundle from the given files in the given root directory.
 	 * @param root the root directory
-	 * @param files the file
+	 * @param files the files
 	 * @return the created bundle
 	 */
 	Bundle createBundle(Path root, FileSet files);

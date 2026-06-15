@@ -33,7 +33,7 @@ public enum PublishingType {
 	USER_MANAGED;
 
 	/**
-	 * Converts this publishing API to the value of the query parameter in the API.
+	 * Converts this publishing type to the value of the query parameter in the API.
 	 * @return the query parameter value
 	 */
 	String toApi() {

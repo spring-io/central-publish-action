@@ -15,6 +15,8 @@
  */
 
 /**
- * Pluggable system abstractions.
+ * Classes related to logging.
+ *
+ * @author Moritz Halbritter
  */
 package io.spring.centralpublish.log;
