@@ -18,7 +18,10 @@ plugins {
     id "checkstyle"
     id "io.spring.javaformat" version "$javaFormatVersion"
     id "java-library"
+    id "maven-publish"
 }
+
+group = "io.spring.centralpublish"
 
 repositories {
     mavenCentral()
@@ -27,6 +30,16 @@ repositories {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
     }
 }
 
@@ -55,4 +68,9 @@ tasks.withType(Test).configureEach {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs = ["-parameters", "-Xlint:all"]
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.addBooleanOption('Werror', true) // fail build on Javadoc warnings
+    options.addBooleanOption('-no-fonts', true)
 }
