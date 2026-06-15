@@ -62,7 +62,7 @@ class BundlerImpl implements Bundler {
 	}
 
 	private ZipEntry createZipEntry(Path root, Path file) throws IOException {
-		String name = root.relativize(file).toString();
+		String name = root.relativize(file).toString().replace('\\', '/');
 		return new ZipEntry(name);
 	}
 
