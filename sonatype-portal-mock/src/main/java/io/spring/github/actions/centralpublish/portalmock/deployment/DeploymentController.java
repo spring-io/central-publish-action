@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +67,13 @@ class DeploymentController {
 		StatusResponse response = new StatusResponse(deployment.getId(), deployment.getName(),
 				deployment.getStatus().name(), deployment.getPurls(), errors);
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping(path = "/api/v1/publisher/deployment/{id}")
+	ResponseEntity<Void> publish(@PathVariable String id) {
+		LOGGER.info("Received publish request for id {}", id);
+		this.deployments.publish(id);
+		return ResponseEntity.noContent().build();
 	}
 
 }

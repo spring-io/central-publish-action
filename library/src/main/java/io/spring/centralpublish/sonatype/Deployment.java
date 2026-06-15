@@ -55,6 +55,12 @@ public interface Deployment {
 	void drop();
 
 	/**
+	 * Publishes the deployment. Will throw an exception if called before
+	 * {@link #awaitFinalStatus()} has been called.
+	 */
+	void publish();
+
+	/**
 	 * Deployment status.
 	 */
 	enum Status {
@@ -95,7 +101,7 @@ public interface Deployment {
 			return switch (this) {
 				case PENDING, VALIDATING, PUBLISHING -> false;
 				case VALIDATED -> publishingType == PublishingType.USER_MANAGED;
-				case PUBLISHED -> publishingType == PublishingType.AUTOMATIC;
+				case PUBLISHED -> true;
 				case FAILED -> true;
 			};
 		}

@@ -72,19 +72,37 @@ class PortalMockIntegrationTests {
 		assertThat(file.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
+	@Test
+	void testUserManagedPublish() throws Exception {
+		String deploymentId = uploadBundle("USER_MANAGED");
+		StatusResponse status = waitForStatus(deploymentId, "VALIDATED");
+		assertThat(status.deploymentState()).isEqualTo("VALIDATED");
+		ResponseEntity<Void> publishResponse = this.restClient.post()
+			.uri("/api/v1/publisher/deployment/{id}", deploymentId)
+			.retrieve()
+			.toBodilessEntity();
+		assertThat(publishResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+		status = waitForStatus(deploymentId, "PUBLISHED");
+		assertThat(status.deploymentState()).isEqualTo("PUBLISHED");
+	}
+
 	private String base64Auth(PortalMockProperties.Token token) {
 		return Base64.getEncoder()
 			.encodeToString("%s:%s".formatted(token.getName(), token.getValue()).getBytes(StandardCharsets.UTF_8));
 	}
 
 	private StatusResponse waitForFinalStatus(String deploymentId) {
+		return waitForStatus(deploymentId, "PUBLISHED");
+	}
+
+	private StatusResponse waitForStatus(String deploymentId, String expectedState) {
 		while (true) {
 			StatusResponse result = this.restClient.post()
 				.uri("/api/v1/publisher/status?id=" + deploymentId)
 				.retrieve()
 				.body(StatusResponse.class);
 			assertThat(result).isNotNull();
-			if (isFinalStatus(result)) {
+			if (expectedState.equals(result.deploymentState()) || "FAILED".equals(result.deploymentState())) {
 				return result;
 			}
 			sleep();
@@ -93,24 +111,25 @@ class PortalMockIntegrationTests {
 
 	private void sleep() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		}
 		catch (InterruptedException ex) {
 			throw new IllegalStateException("Got interrupted while sleeping", ex);
 		}
 	}
 
-	private boolean isFinalStatus(StatusResponse result) {
-		return switch (result.deploymentState()) {
-			case "PUBLISHED", "FAILED" -> true;
-			default -> false;
-		};
+	private String uploadBundle() {
+		return uploadBundle("AUTOMATIC");
 	}
 
-	private String uploadBundle() {
+	private String uploadBundle(String publishingType) {
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("bundle", new ClassPathResource("bundle-with-checksums.zip"));
-		return this.restClient.post().uri("/api/v1/publisher/upload").body(body).retrieve().body(String.class);
+		return this.restClient.post()
+			.uri("/api/v1/publisher/upload?publishingType=" + publishingType)
+			.body(body)
+			.retrieve()
+			.body(String.class);
 	}
 
 }

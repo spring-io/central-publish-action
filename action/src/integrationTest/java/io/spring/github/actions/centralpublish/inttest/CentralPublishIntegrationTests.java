@@ -19,8 +19,10 @@ package io.spring.github.actions.centralpublish.inttest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.Duration;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,7 +30,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import io.spring.centralpublish.bundle.Bundle;
+import io.spring.centralpublish.bundle.Bundler;
+import io.spring.centralpublish.checksum.ChecksumCreator;
+import io.spring.centralpublish.checksum.ChecksumPolicy;
+import io.spring.centralpublish.file.FileScanner;
+import io.spring.centralpublish.file.FileSet;
+import io.spring.centralpublish.log.Logger;
+import io.spring.centralpublish.sonatype.CentralPortalApi;
 import io.spring.centralpublish.sonatype.Deployment;
+import io.spring.centralpublish.sonatype.PublishingType;
 import io.spring.github.actions.centralpublish.CentralPublish;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -39,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,6 +89,31 @@ class CentralPublishIntegrationTests {
 		Path extracted = tempDir.resolve("extracted-bundle");
 		extractBundle(bundle, extracted);
 		assertBundleContents(extracted);
+	}
+
+	@Test
+	void testUserManagedPublish(@TempDir Path tempDir, @LocalServerPort int port) throws Exception {
+		createFilesToDeploy(tempDir);
+		CentralPortalApi api = CentralPortalApi.create(Logger.noop(), URI.create("http://localhost:" + port),
+				TOKEN_NAME, TOKEN, RestClient.builder(), Clock.systemUTC(), Duration.ofSeconds(10),
+				Duration.ofMillis(100));
+		FileScanner scanner = FileScanner.create();
+		FileSet files = scanner.scan(tempDir);
+		ChecksumCreator checksumCreator = ChecksumCreator.create(Logger.noop(), ChecksumPolicy.OVERWRITE_EXISTING);
+		FileSet checksums = checksumCreator.createChecksums(files);
+		files = files.plus(checksums);
+		Bundler bundler = Bundler.create();
+		try (Bundle bundle = bundler.createBundle(tempDir, files)) {
+			Deployment deployment = api.upload(bundle, PublishingType.USER_MANAGED, "test-user-managed-integration");
+			this.sonatypePortal.assertCredentials(TOKEN_NAME, TOKEN);
+			this.sonatypePortal.setStatus(Deployment.Status.VALIDATED);
+			deployment.awaitFinalStatus();
+			assertThat(deployment.getStatus()).isEqualTo(Deployment.Status.VALIDATED);
+			deployment.publish();
+			this.sonatypePortal.setStatus(Deployment.Status.PUBLISHED);
+			deployment.awaitFinalStatus();
+			assertThat(deployment.getStatus()).isEqualTo(Deployment.Status.PUBLISHED);
+		}
 	}
 
 	private static void assertBundleContents(Path extracted) {

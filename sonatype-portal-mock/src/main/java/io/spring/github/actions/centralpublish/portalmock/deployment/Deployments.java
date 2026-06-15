@@ -121,6 +121,27 @@ class Deployments {
 		return this.deployments.get(id);
 	}
 
+	void publish(String id) {
+		Deployment deployment = find(id);
+		if (deployment == null) {
+			throw new IllegalStateException("Deployment '%s' not found".formatted(id));
+		}
+		if (deployment.getStatus() != Deployment.Status.VALIDATED) {
+			throw new IllegalStateException("Deployment '%s' is not in VALIDATED state".formatted(id));
+		}
+		this.asyncTaskExecutor.submit(() -> {
+			try {
+				setDeploymentStatus(id, Deployment.Status.PUBLISHING);
+				sleep(this.delayBetweenSteps);
+				setDeploymentStatus(id, Deployment.Status.PUBLISHED);
+				this.publishedDeployments.add(id, this.deployments.get(id));
+			}
+			catch (Exception ex) {
+				setDeploymentStatus(id, Deployment.Status.FAILED, ex.getMessage());
+			}
+		});
+	}
+
 	private Path getDeploymentFile(String id) {
 		return this.baseDir.resolve(id).resolve("bundle.zip");
 	}

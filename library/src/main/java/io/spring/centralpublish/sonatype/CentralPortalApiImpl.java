@@ -222,6 +222,20 @@ class CentralPortalApiImpl implements CentralPortalApi {
 				.toBodilessEntity();
 		}
 
+		@Override
+		public void publish() {
+			Assert.notNull(this.finalStatus, "Call awaitFinalStatus() before calling publish()");
+			Status status = getStatus();
+			if (status != Status.VALIDATED) {
+				throw new IllegalStateException(
+						"Only validated deployments can be published, but status is '%s'".formatted(status));
+			}
+			this.restClient.post()
+				.uri("/api/v1/publisher/deployment/{deploymentId}", this.deploymentId)
+				.retrieve()
+				.toBodilessEntity();
+		}
+
 		private DeploymentStatusDto fetchDeploymentStatus() {
 			return this.restClient.post()
 				.uri("/api/v1/publisher/status?id={deploymentId}", this.deploymentId)

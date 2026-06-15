@@ -34,6 +34,7 @@ import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,6 +88,21 @@ class FakeSonatypePortal {
 					"Expected status request for id '%s', got '%s'".formatted(DEPLOYMENT_ID, id));
 		}
 		return new StatusResponse(DEPLOYMENT_ID, "dummy", this.status.get().name(), Collections.emptyList());
+	}
+
+	@PostMapping(path = "/api/v1/publisher/deployment/{id}")
+	void publish(@PathVariable String id, @RequestHeader("Authorization") String authorization) {
+		LOGGER.info("Received publish request for id {}", id);
+		this.authorizationHeader.set(authorization);
+		if (!DEPLOYMENT_ID.equals(id)) {
+			throw new IllegalStateException(
+					"Expected publish request for id '%s', got '%s'".formatted(DEPLOYMENT_ID, id));
+		}
+		if (this.status.get() != Deployment.Status.VALIDATED) {
+			throw new IllegalStateException(
+					"Deployment '%s' is not in VALIDATED state, but '%s'".formatted(id, this.status.get()));
+		}
+		this.status.set(Deployment.Status.PUBLISHING);
 	}
 
 	void setStatus(Deployment.Status status) {
