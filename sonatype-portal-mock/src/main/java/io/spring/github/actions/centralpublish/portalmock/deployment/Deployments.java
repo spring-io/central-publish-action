@@ -142,6 +142,19 @@ class Deployments {
 		});
 	}
 
+	void drop(String id) {
+		Deployment deployment = find(id);
+		if (deployment == null) {
+			throw new IllegalStateException("Deployment '%s' not found".formatted(id));
+		}
+		if (deployment.getStatus() != Deployment.Status.VALIDATED
+				&& deployment.getStatus() != Deployment.Status.FAILED) {
+			throw new IllegalStateException("Only validated or failed deployments can be dropped, but status is '%s'"
+				.formatted(deployment.getStatus()));
+		}
+		this.deployments.remove(id);
+	}
+
 	private Path getDeploymentFile(String id) {
 		return this.baseDir.resolve(id).resolve("bundle.zip");
 	}

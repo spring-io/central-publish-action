@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,6 +74,13 @@ class DeploymentController {
 	ResponseEntity<Void> publish(@PathVariable String id) {
 		LOGGER.info("Received publish request for id {}", id);
 		this.deployments.publish(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping(path = "/api/v1/publisher/deployment/{id}")
+	ResponseEntity<Void> drop(@PathVariable String id) {
+		LOGGER.info("Received drop request for id {}", id);
+		this.deployments.drop(id);
 		return ResponseEntity.noContent().build();
 	}
 

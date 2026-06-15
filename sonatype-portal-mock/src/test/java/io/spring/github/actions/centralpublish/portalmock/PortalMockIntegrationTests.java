@@ -32,9 +32,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests for {@link PortalMock}.
@@ -84,6 +86,24 @@ class PortalMockIntegrationTests {
 		assertThat(publishResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 		status = waitForStatus(deploymentId, "PUBLISHED");
 		assertThat(status.deploymentState()).isEqualTo("PUBLISHED");
+	}
+
+	@Test
+	void testUserManagedDrop() throws Exception {
+		String deploymentId = uploadBundle("USER_MANAGED");
+		StatusResponse status = waitForStatus(deploymentId, "VALIDATED");
+		assertThat(status.deploymentState()).isEqualTo("VALIDATED");
+		ResponseEntity<Void> dropResponse = this.restClient.delete()
+			.uri("/api/v1/publisher/deployment/{id}", deploymentId)
+			.retrieve()
+			.toBodilessEntity();
+		assertThat(dropResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+		assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+			.isThrownBy(() -> this.restClient.post()
+				.uri("/api/v1/publisher/status?id=" + deploymentId)
+				.retrieve()
+				.toBodilessEntity())
+			.satisfies((ex) -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND));
 	}
 
 	private String base64Auth(PortalMockProperties.Token token) {
