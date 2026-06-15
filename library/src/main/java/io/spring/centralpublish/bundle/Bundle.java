@@ -28,7 +28,7 @@ import org.springframework.util.unit.DataSize;
  *
  * @author Moritz Halbritter
  */
-public final class Bundle {
+public final class Bundle implements AutoCloseable {
 
 	private final Path file;
 
@@ -56,6 +56,16 @@ public final class Bundle {
 	 */
 	public static Bundle of(Path file) {
 		return new Bundle(file);
+	}
+
+	@Override
+	public void close() {
+		try {
+			Files.deleteIfExists(this.file);
+		}
+		catch (IOException ex) {
+			throw new UncheckedIOException("Failed to delete %s".formatted(this.file), ex);
+		}
 	}
 
 }

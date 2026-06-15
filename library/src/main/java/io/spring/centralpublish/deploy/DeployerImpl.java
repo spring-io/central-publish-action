@@ -92,9 +92,11 @@ class DeployerImpl implements Deployer {
 		FileSet checksums = this.checksumCreator.createChecksums(files);
 		files = files.plus(checksums);
 		this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
-		Bundle bundle = this.bundleCreator.createBundle(this.root, files);
-		this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());
-		Deployment deployment = this.centralPortalApi.upload(bundle, this.publishingType, this.deploymentName);
+		Deployment deployment;
+		try (Bundle bundle = this.bundleCreator.createBundle(this.root, files)) {
+			this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());
+			deployment = this.centralPortalApi.upload(bundle, this.publishingType, this.deploymentName);
+		}
 		this.logger.log("Bundle uploaded, resulting in deployment '{}'.", deployment.getId());
 		this.logger.log("Awaiting final status ...");
 		deployment.awaitFinalStatus();
