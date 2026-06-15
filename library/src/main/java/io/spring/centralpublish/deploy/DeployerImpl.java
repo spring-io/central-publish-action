@@ -116,7 +116,7 @@ class DeployerImpl implements Deployer {
 		}
 		this.logger.log("Deployment '{}' is done. Please execute required manual steps to publish the deployment.",
 				deployment.getId());
-		return Result.SUCCESS;
+		return Result.success(deployment);
 	}
 
 	private Result deploymentPublished(Deployment deployment) {
@@ -129,7 +129,7 @@ class DeployerImpl implements Deployer {
 			this.logger.log("Waiting for artifact to appear");
 			this.artifactAwaiter.await(this.awaitArtifact);
 		}
-		return Result.SUCCESS;
+		return Result.success(deployment);
 	}
 
 	private Result deploymentFailed(Deployment deployment) {
@@ -137,12 +137,12 @@ class DeployerImpl implements Deployer {
 		if (this.ignoreAlreadyExistsError && errors.hasOnlyAlreadyExistsError()) {
 			this.logger.log("Deployment '{}' has already been deployed", deployment.getId());
 			dropDeployment(deployment);
-			return Result.SUCCESS;
+			return Result.success(deployment);
 		}
 		this.logger.error("Deployment '{}' failed", deployment.getId());
 		this.logger.error("Errors:\n\n{}", errors);
 		dropDeployment(deployment);
-		return Result.FAILURE;
+		return Result.failure(deployment);
 	}
 
 	private void dropDeployment(Deployment deployment) {

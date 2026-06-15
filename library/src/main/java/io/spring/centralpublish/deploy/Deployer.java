@@ -23,6 +23,7 @@ import io.spring.centralpublish.checksum.ChecksumCreator;
 import io.spring.centralpublish.file.FileScanner;
 import io.spring.centralpublish.log.Logger;
 import io.spring.centralpublish.sonatype.CentralPortalApi;
+import io.spring.centralpublish.sonatype.Deployment;
 import io.spring.centralpublish.sonatype.PublishingType;
 import org.jspecify.annotations.Nullable;
 
@@ -65,18 +66,45 @@ public interface Deployer {
 
 	/**
 	 * Deployment result.
+	 *
+	 * @param status the status
+	 * @param deployment the deployment
 	 */
-	enum Result {
+	record Result(Status status, Deployment deployment) {
 
 		/**
-		 * Success.
+		 * Creates a successful deployment result.
+		 * @param deployment the deployment
+		 * @return the successful deployment result
 		 */
-		SUCCESS,
-		/**
-		 * Failure.
-		 */
-		FAILURE
+		public static Result success(Deployment deployment) {
+			return new Result(Status.SUCCESS, deployment);
+		}
 
+		/**
+		 * Creates a failed deployment result.
+		 * @param deployment the deployment
+		 * @return the failed deployment result
+		 */
+		public static Result failure(Deployment deployment) {
+			return new Result(Status.FAILURE, deployment);
+		}
+
+		/**
+		 * Deployment result status.
+		 */
+		public enum Status {
+
+			/**
+			 * Success.
+			 */
+			SUCCESS,
+			/**
+			 * Failure.
+			 */
+			FAILURE
+
+		}
 	}
 
 }

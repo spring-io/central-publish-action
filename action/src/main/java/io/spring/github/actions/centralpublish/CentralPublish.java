@@ -36,7 +36,7 @@ public class CentralPublish {
 			Deployer deployer = app.getBean(Deployer.class);
 			result = deployer.deploy();
 		}
-		int status = switch (result) {
+		int status = switch (result.status()) {
 			case SUCCESS -> 0;
 			case FAILURE -> 1;
 		};
