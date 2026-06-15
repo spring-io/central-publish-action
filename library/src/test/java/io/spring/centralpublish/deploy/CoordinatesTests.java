@@ -44,6 +44,12 @@ class CoordinatesTests {
 	}
 
 	@Test
+	void parseShouldFailWithCorrectMessageIfOnlyOnePart() {
+		assertThatIllegalStateException().isThrownBy(() -> Coordinates.parse("only-one-part"))
+			.withMessage("Expected 3 parts, got 1 for 'only-one-part'");
+	}
+
+	@Test
 	void hasToString() {
 		Coordinates coordinates = Coordinates.parse("org.springframework.boot:spring-boot-starter:3.5.0");
 		assertThat(coordinates).hasToString("org.springframework.boot:spring-boot-starter:3.5.0");

@@ -29,7 +29,7 @@ import org.springframework.util.Assert;
 public record Coordinates(String group, String artifact, String version) {
 	public static Coordinates parse(String input) {
 		String[] parts = input.split(":");
-		Assert.state(parts.length == 3, "Expected 3 parts, got 2 for '%s'".formatted(input));
+		Assert.state(parts.length == 3, "Expected 3 parts, got %d for '%s'".formatted(parts.length, input));
 		return new Coordinates(parts[0], parts[1], parts[2]);
 	}
 
