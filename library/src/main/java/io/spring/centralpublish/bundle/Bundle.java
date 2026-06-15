@@ -36,10 +36,18 @@ public final class Bundle implements AutoCloseable {
 		this.file = file;
 	}
 
+	/**
+	 * Returns the path to the bundle file.
+	 * @return the bundle file path
+	 */
 	public Path getFile() {
 		return this.file;
 	}
 
+	/**
+	 * Returns the size of the bundle.
+	 * @return the size of the bundle
+	 */
 	public DataSize getSize() {
 		try {
 			return DataSize.ofBytes(Files.size(this.file));

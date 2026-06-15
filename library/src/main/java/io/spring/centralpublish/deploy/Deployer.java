@@ -33,8 +33,28 @@ import org.jspecify.annotations.Nullable;
  */
 public interface Deployer {
 
+	/**
+	 * Deploys the artifacts to the Central Portal.
+	 * @return the deployment result
+	 */
 	Result deploy();
 
+	/**
+	 * Creates a new {@link Deployer}.
+	 * @param logger the logger
+	 * @param root the root directory of the artifacts
+	 * @param publishingType the publishing type
+	 * @param fileScanner the file scanner
+	 * @param checksumCreator the checksum creator
+	 * @param bundler the bundler
+	 * @param centralPortalApi the Central Portal API client
+	 * @param artifactAwaiter the artifact awaiter
+	 * @param dropOnFailure whether to drop the deployment on failure
+	 * @param ignoreAlreadyExistsError whether to ignore "already exists" errors
+	 * @param awaitArtifact the coordinates of the artifact to await, or {@code null}
+	 * @param name the deployment name, or {@code null}
+	 * @return the {@link Deployer}
+	 */
 	static Deployer create(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
 			ArtifactAwaiter artifactAwaiter, boolean dropOnFailure, boolean ignoreAlreadyExistsError,

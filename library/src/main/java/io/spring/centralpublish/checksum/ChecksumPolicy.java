@@ -18,6 +18,11 @@ package io.spring.centralpublish.checksum;
 
 import java.nio.file.Path;
 
+/**
+ * Policy for handling existing checksums.
+ *
+ * @author Moritz Halbritter
+ */
 public enum ChecksumPolicy {
 
 	/**

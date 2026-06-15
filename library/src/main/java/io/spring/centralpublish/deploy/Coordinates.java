@@ -27,6 +27,15 @@ import org.springframework.util.Assert;
  * @author Moritz Halbritter
  */
 public record Coordinates(String group, String artifact, String version) {
+
+	/**
+	 * Parses the given coordinate string.
+	 * @param input the coordinate string to parse, in the format
+	 * {@code group:artifact:version}
+	 * @return the parsed {@link Coordinates}
+	 * @throws IllegalStateException if the coordinate string does not contain exactly 3
+	 * parts
+	 */
 	public static Coordinates parse(String input) {
 		String[] parts = input.split(":");
 		Assert.state(parts.length == 3, "Expected 3 parts, got %d for '%s'".formatted(parts.length, input));
