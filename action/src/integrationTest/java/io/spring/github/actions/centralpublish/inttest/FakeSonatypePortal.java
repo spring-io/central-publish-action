@@ -27,8 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import io.spring.centralpublish.bundle.Bundle;
-import io.spring.centralpublish.sonatype.Deployment;
+import io.spring.maven.central.bundle.Bundle;
+import io.spring.maven.central.sonatype.Deployment;
 import org.awaitility.Awaitility;
 import org.hamcrest.Matchers;
 import org.slf4j.Logger;

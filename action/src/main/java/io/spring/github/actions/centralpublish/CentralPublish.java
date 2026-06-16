@@ -16,7 +16,7 @@
 
 package io.spring.github.actions.centralpublish;
 
-import io.spring.centralpublish.deploy.Deployer;
+import io.spring.maven.central.deploy.Deployer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

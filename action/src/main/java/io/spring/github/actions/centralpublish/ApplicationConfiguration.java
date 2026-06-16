@@ -18,16 +18,16 @@ package io.spring.github.actions.centralpublish;
 
 import java.time.Clock;
 
-import io.spring.centralpublish.bundle.Bundler;
-import io.spring.centralpublish.checksum.ChecksumCreator;
-import io.spring.centralpublish.checksum.ChecksumPolicy;
-import io.spring.centralpublish.deploy.ArtifactAwaiter;
-import io.spring.centralpublish.deploy.Coordinates;
-import io.spring.centralpublish.deploy.Deployer;
-import io.spring.centralpublish.file.FileScanner;
-import io.spring.centralpublish.log.Logger;
-import io.spring.centralpublish.sonatype.CentralPortalApi;
-import io.spring.centralpublish.sonatype.PublishingType;
+import io.spring.maven.central.bundle.Bundler;
+import io.spring.maven.central.checksum.ChecksumCreator;
+import io.spring.maven.central.checksum.ChecksumPolicy;
+import io.spring.maven.central.deploy.ArtifactAwaiter;
+import io.spring.maven.central.deploy.Coordinates;
+import io.spring.maven.central.deploy.Deployer;
+import io.spring.maven.central.file.FileScanner;
+import io.spring.maven.central.log.Logger;
+import io.spring.maven.central.sonatype.CentralPortalApi;
+import io.spring.maven.central.sonatype.PublishingType;
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
