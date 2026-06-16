@@ -40,6 +40,22 @@ publishing {
             artifactId = 'maven-central-publish-core'
 
             from components.java
+
+            // Embed versions into the POM
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+
+            // Remove <dependencyManagement> from the published POM
+            pom.withXml {
+                def root = asNode()
+                root.dependencyManagement.each { root.remove(it) }
+            }
         }
     }
     repositories {
@@ -61,9 +77,11 @@ dependencies {
     checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
 
     implementation(platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+
+    api("org.springframework:spring-core")
+    api("org.springframework:spring-web")
+
     implementation("org.slf4j:slf4j-api")
-    implementation("org.springframework:spring-core")
-    implementation("org.springframework:spring-web")
 
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core")
