@@ -21,8 +21,6 @@ plugins {
     id "maven-publish"
 }
 
-group = "io.spring.centralpublish"
-
 repositories {
     mavenCentral()
 }
@@ -37,7 +35,10 @@ java {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        maven(MavenPublication) {
+            groupId = 'io.spring.maven.central'
+            artifactId = 'maven-central-publish-core'
+
             from components.java
         }
     }
