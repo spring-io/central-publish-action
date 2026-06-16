@@ -43,4 +43,12 @@ public interface ChecksumCreator {
 		return new ChecksumCreatorImpl(logger, checksumPolicy);
 	}
 
+	/**
+	 * Creates a no-op {@link ChecksumCreator}.
+	 * @return the {@link ChecksumCreator}
+	 */
+	static ChecksumCreator noop() {
+		return (_) -> FileSet.empty();
+	}
+
 }

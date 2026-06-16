@@ -90,8 +90,13 @@ class DeployerImpl implements Deployer {
 		}
 		this.logger.log("Found {} files, creating checksums ...", files.size());
 		FileSet checksums = this.checksumCreator.createChecksums(files);
-		files = files.plus(checksums);
-		this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
+		if (checksums.isEmpty()) {
+			this.logger.log("No checksums created. Creating bundle with {} files ...", files.size());
+		}
+		else {
+			files = files.plus(checksums);
+			this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
+		}
 		Deployment deployment;
 		try (Bundle bundle = this.bundleCreator.createBundle(this.root, files)) {
 			this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());

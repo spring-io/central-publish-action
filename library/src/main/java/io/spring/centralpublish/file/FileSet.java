@@ -64,6 +64,12 @@ public final class FileSet implements Iterable<Path> {
 	 * @return a collection containing files contained in this and the other collection
 	 */
 	public FileSet plus(FileSet other) {
+		if (isEmpty()) {
+			return other;
+		}
+		if (other.isEmpty()) {
+			return this;
+		}
 		Set<Path> files = new HashSet<>(this.files);
 		files.addAll(other.files);
 		return new FileSet(files);
