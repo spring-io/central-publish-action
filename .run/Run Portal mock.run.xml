@@ -29,7 +29,7 @@
       </param>
     </additionalParameters>
     <module name="central-publish-action.sonatype-portal-mock.main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="io.spring.github.actions.centralpublish.portalmock.PortalMock" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.spring.maven.central.portalmock.PortalMock" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
