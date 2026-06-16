@@ -41,6 +41,14 @@ publishing {
             from components.java
         }
     }
+    repositories {
+        if (project.hasProperty("deploymentRepository")) {
+            maven {
+                name = 'Deployment'
+                url = project.property("deploymentRepository")
+            }
+        }
+    }
 }
 
 checkstyle {
