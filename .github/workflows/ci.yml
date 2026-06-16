@@ -71,4 +71,15 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          gradle-task: '-PdeploymentRepository=$(pwd)/deployment-repository publishAllPublicationsToDeploymentRepository'
+          gradle-task: '-PdeploymentRepository=$(pwd)/maven-repo publishAllPublicationsToDeploymentRepository'
+      - name: Deploy to repo.spring.io
+        uses: spring-io/artifactory-deploy-action@926d7f7cc810569395346bf3a4d91b380b3e355b # v0.0.4
+        with:
+          uri: 'https://repo.spring.io'
+          username: ${{ secrets.ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          build-name: ${{ format('maven-central-publish-{0}', github.ref_name)}}
+          repository: 'libs-snapshot-local'
+          folder: './maven-repo/'
+          signing-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          signing-passphrase: ${{ secrets.GPG_PASSPHRASE }}
