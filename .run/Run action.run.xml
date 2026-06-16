@@ -49,7 +49,7 @@
       </param>
     </additionalParameters>
     <module name="central-publish-action.action.main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="io.spring.github.actions.centralpublish.CentralPublish" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.spring.maven.central.action.CentralPublish" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

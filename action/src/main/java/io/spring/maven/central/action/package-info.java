@@ -17,4 +17,4 @@
 /**
  * Main application entrypoint.
  */
-package io.spring.github.actions.centralpublish;
+package io.spring.maven.central.action;

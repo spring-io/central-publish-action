@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.spring.github.actions.centralpublish;
+package io.spring.maven.central.action;
 
 import java.time.Clock;
 

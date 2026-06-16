@@ -14,21 +14,33 @@
  * limitations under the License.
  */
 
-package io.spring.github.actions.centralpublish.inttest;
+package io.spring.maven.central.action;
+
+import io.spring.maven.central.deploy.Deployer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * Spring Boot app used for integration tests.
+ * Main Application entry point.
  *
  * @author Moritz Halbritter
  */
 @SpringBootApplication(proxyBeanMethods = false)
-class CentralPublishIntegrationTestsApp {
+public class CentralPublish {
 
-	static void main(String[] args) {
-		SpringApplication.run(CentralPublishIntegrationTestsApp.class, args);
+	public static void main(String... args) {
+		Deployer.Result result;
+		try (ConfigurableApplicationContext app = SpringApplication.run(CentralPublish.class, args)) {
+			Deployer deployer = app.getBean(Deployer.class);
+			result = deployer.deploy();
+		}
+		int status = switch (result.status()) {
+			case SUCCESS -> 0;
+			case FAILURE -> 1;
+		};
+		System.exit(status);
 	}
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.spring.github.actions.centralpublish.inttest;
+package io.spring.maven.central.action.inttest;
 
 import java.io.IOException;
 import java.io.OutputStream;

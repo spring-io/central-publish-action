@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.spring.github.actions.centralpublish.inttest;
+package io.spring.maven.central.action.inttest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import io.spring.github.actions.centralpublish.CentralPublish;
+import io.spring.maven.central.action.CentralPublish;
 import io.spring.maven.central.bundle.Bundle;
 import io.spring.maven.central.bundle.Bundler;
 import io.spring.maven.central.checksum.ChecksumCreator;

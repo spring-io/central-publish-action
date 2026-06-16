@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
+package io.spring.maven.central.action.inttest;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 /**
- * Integration tests.
+ * Spring Boot app used for integration tests.
  *
  * @author Moritz Halbritter
  */
-package io.spring.github.actions.centralpublish.inttest;
+@SpringBootApplication(proxyBeanMethods = false)
+class CentralPublishIntegrationTestsApp {
+
+	static void main(String[] args) {
+		SpringApplication.run(CentralPublishIntegrationTestsApp.class, args);
+	}
+
+}
