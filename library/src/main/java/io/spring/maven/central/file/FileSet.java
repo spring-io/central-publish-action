@@ -17,6 +17,7 @@
 package io.spring.maven.central.file;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -88,7 +89,22 @@ public final class FileSet implements Iterable<Path> {
 	 * @param files the files
 	 * @return the collection containing the given files
 	 */
+	public static FileSet of(Path... files) {
+		if (files.length == 0) {
+			return empty();
+		}
+		return of(Arrays.asList(files));
+	}
+
+	/**
+	 * Creates a collection of the given files.
+	 * @param files the files
+	 * @return the collection containing the given files
+	 */
 	public static FileSet of(Collection<Path> files) {
+		if (files.isEmpty()) {
+			return empty();
+		}
 		return new FileSet(files.stream().map(Path::toAbsolutePath).collect(Collectors.toSet()));
 	}
 
