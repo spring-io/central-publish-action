@@ -101,8 +101,8 @@ class ApplicationConfiguration {
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
 			ArtifactAwaiter artifactAwaiter) {
 		CentralPublishProperties.Deployment deployment = properties.getDeployment();
-		return Deployer.create(logger, properties.getDirectoryAsPath(), getPublishingType(deployment), fileScanner,
-				checksumCreator, bundler, centralPortalApi, artifactAwaiter, deployment.isDropOnFailure(),
+		return Deployer.create(logger, getPublishingType(deployment), fileScanner, checksumCreator, bundler,
+				centralPortalApi, artifactAwaiter, deployment.isDropOnFailure(),
 				deployment.isIgnoreAlreadyExistsError(), getAwaitArtifact(deployment), deployment.getName());
 	}
 

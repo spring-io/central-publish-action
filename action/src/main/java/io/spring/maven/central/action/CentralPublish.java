@@ -33,8 +33,9 @@ public class CentralPublish {
 	public static void main(String... args) {
 		Deployer.Result result;
 		try (ConfigurableApplicationContext app = SpringApplication.run(CentralPublish.class, args)) {
+			CentralPublishProperties properties = app.getBean(CentralPublishProperties.class);
 			Deployer deployer = app.getBean(Deployer.class);
-			result = deployer.deploy();
+			result = deployer.deploy(properties.getDirectoryAsPath());
 		}
 		int status = switch (result.status()) {
 			case SUCCESS -> 0;

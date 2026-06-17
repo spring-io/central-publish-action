@@ -49,8 +49,6 @@ class DeployerImpl implements Deployer {
 
 	private final ArtifactAwaiter artifactAwaiter;
 
-	private final Path root;
-
 	private final PublishingType publishingType;
 
 	private final boolean dropDeploymentOnFailure;
@@ -61,12 +59,11 @@ class DeployerImpl implements Deployer {
 
 	private final @Nullable String deploymentName;
 
-	DeployerImpl(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
-			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
-			ArtifactAwaiter artifactAwaiter, boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError,
-			@Nullable Coordinates awaitArtifact, @Nullable String deploymentName) {
+	DeployerImpl(Logger logger, PublishingType publishingType, FileScanner fileScanner, ChecksumCreator checksumCreator,
+			Bundler bundler, CentralPortalApi centralPortalApi, ArtifactAwaiter artifactAwaiter,
+			boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError, @Nullable Coordinates awaitArtifact,
+			@Nullable String deploymentName) {
 		this.logger = logger;
-		this.root = root;
 		this.publishingType = publishingType;
 		this.fileScanner = fileScanner;
 		this.checksumCreator = checksumCreator;
@@ -80,13 +77,13 @@ class DeployerImpl implements Deployer {
 	}
 
 	@Override
-	public Result deploy() {
+	public Result deploy(Path root) {
 		if (this.awaitArtifact != null && this.publishingType != PublishingType.AUTOMATIC) {
 			throw new IllegalStateException("Await artifact can only be used if publishing type is automatic");
 		}
-		FileSet files = this.fileScanner.scan(this.root);
+		FileSet files = this.fileScanner.scan(root);
 		if (files.isEmpty()) {
-			throw new IllegalStateException("No files found in directory '%s'".formatted(this.root));
+			throw new IllegalStateException("No files found in directory '%s'".formatted(root));
 		}
 		this.logger.log("Found {} files, creating checksums ...", files.size());
 		FileSet checksums = this.checksumCreator.createChecksums(files);
@@ -98,7 +95,7 @@ class DeployerImpl implements Deployer {
 			this.logger.log("Checksums created. Creating bundle with {} files ...", files.size());
 		}
 		Deployment deployment;
-		try (Bundle bundle = this.bundleCreator.createBundle(this.root, files)) {
+		try (Bundle bundle = this.bundleCreator.createBundle(root, files)) {
 			this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());
 			deployment = this.centralPortalApi.upload(bundle, this.publishingType, this.deploymentName);
 		}

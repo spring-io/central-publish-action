@@ -36,14 +36,14 @@ public interface Deployer {
 
 	/**
 	 * Deploys the artifacts to the Central Portal.
+	 * @param root the root directory of the artifacts
 	 * @return the deployment result
 	 */
-	Result deploy();
+	Result deploy(Path root);
 
 	/**
 	 * Creates a new {@link Deployer}.
 	 * @param logger the logger
-	 * @param root the root directory of the artifacts
 	 * @param publishingType the publishing type
 	 * @param fileScanner the file scanner
 	 * @param checksumCreator the checksum creator
@@ -56,11 +56,11 @@ public interface Deployer {
 	 * @param name the deployment name, or {@code null}
 	 * @return the {@link Deployer}
 	 */
-	static Deployer create(Logger logger, Path root, PublishingType publishingType, FileScanner fileScanner,
+	static Deployer create(Logger logger, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
 			ArtifactAwaiter artifactAwaiter, boolean dropOnFailure, boolean ignoreAlreadyExistsError,
 			@Nullable Coordinates awaitArtifact, @Nullable String name) {
-		return new DeployerImpl(logger, root, publishingType, fileScanner, checksumCreator, bundler, centralPortalApi,
+		return new DeployerImpl(logger, publishingType, fileScanner, checksumCreator, bundler, centralPortalApi,
 				artifactAwaiter, dropOnFailure, ignoreAlreadyExistsError, awaitArtifact, name);
 	}
 
