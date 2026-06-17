@@ -22,19 +22,16 @@ import io.spring.maven.central.bundle.Bundler;
 import io.spring.maven.central.checksum.ChecksumCreator;
 import io.spring.maven.central.checksum.ChecksumPolicy;
 import io.spring.maven.central.deploy.ArtifactAwaiter;
-import io.spring.maven.central.deploy.Coordinates;
 import io.spring.maven.central.deploy.Deployer;
 import io.spring.maven.central.file.FileScanner;
 import io.spring.maven.central.log.Logger;
 import io.spring.maven.central.sonatype.CentralPortalApi;
 import io.spring.maven.central.sonatype.PublishingType;
-import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -102,8 +99,7 @@ class ApplicationConfiguration {
 			ArtifactAwaiter artifactAwaiter) {
 		CentralPublishProperties.Deployment deployment = properties.getDeployment();
 		return Deployer.create(logger, getPublishingType(deployment), fileScanner, checksumCreator, bundler,
-				centralPortalApi, artifactAwaiter, deployment.isDropOnFailure(),
-				deployment.isIgnoreAlreadyExistsError(), getAwaitArtifact(deployment), deployment.getName());
+				centralPortalApi, artifactAwaiter);
 	}
 
 	@Bean
@@ -112,14 +108,6 @@ class ApplicationConfiguration {
 		return ArtifactAwaiter.create(logger, properties.getDeployment().getTimeout(),
 				properties.getDeployment().getSleepBetweenRetries(), properties.getMavenCentralBaseUri(),
 				restClientBuilder);
-	}
-
-	private @Nullable Coordinates getAwaitArtifact(CentralPublishProperties.Deployment properties) {
-		String awaitArtifact = properties.getAwaitArtifact();
-		if (!StringUtils.hasLength(awaitArtifact)) {
-			return null;
-		}
-		return Coordinates.parse(awaitArtifact);
 	}
 
 	private PublishingType getPublishingType(CentralPublishProperties.Deployment properties) {

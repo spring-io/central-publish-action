@@ -51,18 +51,8 @@ class DeployerImpl implements Deployer {
 
 	private final PublishingType publishingType;
 
-	private final boolean dropDeploymentOnFailure;
-
-	private final boolean ignoreAlreadyExistsError;
-
-	private final @Nullable Coordinates awaitArtifact;
-
-	private final @Nullable String deploymentName;
-
 	DeployerImpl(Logger logger, PublishingType publishingType, FileScanner fileScanner, ChecksumCreator checksumCreator,
-			Bundler bundler, CentralPortalApi centralPortalApi, ArtifactAwaiter artifactAwaiter,
-			boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError, @Nullable Coordinates awaitArtifact,
-			@Nullable String deploymentName) {
+			Bundler bundler, CentralPortalApi centralPortalApi, ArtifactAwaiter artifactAwaiter) {
 		this.logger = logger;
 		this.publishingType = publishingType;
 		this.fileScanner = fileScanner;
@@ -70,15 +60,12 @@ class DeployerImpl implements Deployer {
 		this.bundleCreator = bundler;
 		this.centralPortalApi = centralPortalApi;
 		this.artifactAwaiter = artifactAwaiter;
-		this.dropDeploymentOnFailure = dropDeploymentOnFailure;
-		this.ignoreAlreadyExistsError = ignoreAlreadyExistsError;
-		this.awaitArtifact = awaitArtifact;
-		this.deploymentName = deploymentName;
 	}
 
 	@Override
-	public Result deploy(Path root) {
-		if (this.awaitArtifact != null && this.publishingType != PublishingType.AUTOMATIC) {
+	public Result deploy(Path root, boolean dropDeploymentOnFailure, boolean ignoreAlreadyExistsError,
+			@Nullable Coordinates awaitArtifact, @Nullable String deploymentName) {
+		if (awaitArtifact != null && this.publishingType != PublishingType.AUTOMATIC) {
 			throw new IllegalStateException("Await artifact can only be used if publishing type is automatic");
 		}
 		FileSet files = this.fileScanner.scan(root);
@@ -97,14 +84,14 @@ class DeployerImpl implements Deployer {
 		Deployment deployment;
 		try (Bundle bundle = this.bundleCreator.createBundle(root, files)) {
 			this.logger.log("Bundle created. Uploading {} to Sonatype ...", bundle.getSize());
-			deployment = this.centralPortalApi.upload(bundle, this.publishingType, this.deploymentName);
+			deployment = this.centralPortalApi.upload(bundle, this.publishingType, deploymentName);
 		}
 		this.logger.log("Bundle uploaded, resulting in deployment '{}'.", deployment.getId());
 		this.logger.log("Awaiting final status ...");
 		deployment.awaitFinalStatus();
 		return switch (deployment.getStatus()) {
-			case FAILED -> deploymentFailed(deployment);
-			case PUBLISHED -> deploymentPublished(deployment);
+			case FAILED -> deploymentFailed(deployment, ignoreAlreadyExistsError, dropDeploymentOnFailure);
+			case PUBLISHED -> deploymentPublished(deployment, awaitArtifact);
 			case VALIDATED -> deploymentValidated(deployment);
 			default -> throw new IllegalStateException(
 					"Unexpected deployment status value %s".formatted(deployment.getStatus()));
@@ -121,34 +108,35 @@ class DeployerImpl implements Deployer {
 		return Result.success(deployment);
 	}
 
-	private Result deploymentPublished(Deployment deployment) {
+	private Result deploymentPublished(Deployment deployment, @Nullable Coordinates awaitArtifact) {
 		if (this.publishingType == PublishingType.USER_MANAGED) {
 			throw new IllegalStateException(
 					"Publishing type USER_MANAGED should only have states FAILED or VALIDATED, but got PUBLISHED");
 		}
 		this.logger.log("Deployment '{}' successfully published", deployment.getId());
-		if (this.awaitArtifact != null) {
+		if (awaitArtifact != null) {
 			this.logger.log("Waiting for artifact to appear");
-			this.artifactAwaiter.await(this.awaitArtifact);
+			this.artifactAwaiter.await(awaitArtifact);
 		}
 		return Result.success(deployment);
 	}
 
-	private Result deploymentFailed(Deployment deployment) {
+	private Result deploymentFailed(Deployment deployment, boolean ignoreAlreadyExistsError,
+			boolean dropDeploymentOnFailure) {
 		Errors errors = deployment.getErrors();
-		if (this.ignoreAlreadyExistsError && errors.hasOnlyAlreadyExistsError()) {
+		if (ignoreAlreadyExistsError && errors.hasOnlyAlreadyExistsError()) {
 			this.logger.log("Deployment '{}' has already been deployed", deployment.getId());
-			dropDeployment(deployment);
+			dropDeployment(deployment, dropDeploymentOnFailure);
 			return Result.success(deployment);
 		}
 		this.logger.error("Deployment '{}' failed", deployment.getId());
 		this.logger.error("Errors:\n\n{}", errors);
-		dropDeployment(deployment);
+		dropDeployment(deployment, dropDeploymentOnFailure);
 		return Result.failure(deployment);
 	}
 
-	private void dropDeployment(Deployment deployment) {
-		if (this.dropDeploymentOnFailure) {
+	private void dropDeployment(Deployment deployment, boolean dropDeploymentOnFailure) {
+		if (dropDeploymentOnFailure) {
 			this.logger.log("Dropping deployment");
 			deployment.drop();
 		}

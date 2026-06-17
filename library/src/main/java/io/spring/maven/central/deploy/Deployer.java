@@ -37,9 +37,14 @@ public interface Deployer {
 	/**
 	 * Deploys the artifacts to the Central Portal.
 	 * @param root the root directory of the artifacts
+	 * @param dropOnFailure whether to drop the deployment on failure
+	 * @param ignoreAlreadyExistsError whether to ignore "already exists" errors
+	 * @param awaitArtifact the coordinates of the artifact to await, or {@code null}
+	 * @param name the deployment name, or {@code null}
 	 * @return the deployment result
 	 */
-	Result deploy(Path root);
+	Result deploy(Path root, boolean dropOnFailure, boolean ignoreAlreadyExistsError,
+			@Nullable Coordinates awaitArtifact, @Nullable String name);
 
 	/**
 	 * Creates a new {@link Deployer}.
@@ -50,18 +55,13 @@ public interface Deployer {
 	 * @param bundler the bundler
 	 * @param centralPortalApi the Central Portal API client
 	 * @param artifactAwaiter the artifact awaiter
-	 * @param dropOnFailure whether to drop the deployment on failure
-	 * @param ignoreAlreadyExistsError whether to ignore "already exists" errors
-	 * @param awaitArtifact the coordinates of the artifact to await, or {@code null}
-	 * @param name the deployment name, or {@code null}
 	 * @return the {@link Deployer}
 	 */
 	static Deployer create(Logger logger, PublishingType publishingType, FileScanner fileScanner,
 			ChecksumCreator checksumCreator, Bundler bundler, CentralPortalApi centralPortalApi,
-			ArtifactAwaiter artifactAwaiter, boolean dropOnFailure, boolean ignoreAlreadyExistsError,
-			@Nullable Coordinates awaitArtifact, @Nullable String name) {
+			ArtifactAwaiter artifactAwaiter) {
 		return new DeployerImpl(logger, publishingType, fileScanner, checksumCreator, bundler, centralPortalApi,
-				artifactAwaiter, dropOnFailure, ignoreAlreadyExistsError, awaitArtifact, name);
+				artifactAwaiter);
 	}
 
 	/**

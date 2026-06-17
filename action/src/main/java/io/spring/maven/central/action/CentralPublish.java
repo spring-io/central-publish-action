@@ -16,11 +16,14 @@
 
 package io.spring.maven.central.action;
 
+import io.spring.maven.central.deploy.Coordinates;
 import io.spring.maven.central.deploy.Deployer;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 
 /**
  * Main Application entry point.
@@ -35,13 +38,23 @@ public class CentralPublish {
 		try (ConfigurableApplicationContext app = SpringApplication.run(CentralPublish.class, args)) {
 			CentralPublishProperties properties = app.getBean(CentralPublishProperties.class);
 			Deployer deployer = app.getBean(Deployer.class);
-			result = deployer.deploy(properties.getDirectoryAsPath());
+			CentralPublishProperties.Deployment deployment = properties.getDeployment();
+			result = deployer.deploy(properties.getDirectoryAsPath(), deployment.isDropOnFailure(),
+					deployment.isIgnoreAlreadyExistsError(), getAwaitArtifact(deployment.getAwaitArtifact()),
+					deployment.getName());
 		}
 		int status = switch (result.status()) {
 			case SUCCESS -> 0;
 			case FAILURE -> 1;
 		};
 		System.exit(status);
+	}
+
+	private static @Nullable Coordinates getAwaitArtifact(@Nullable String coordinates) {
+		if (!StringUtils.hasLength(coordinates)) {
+			return null;
+		}
+		return Coordinates.parse(coordinates);
 	}
 
 }
