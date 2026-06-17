@@ -52,4 +52,14 @@ public interface ArtifactAwaiter {
 		return new ArtifactAwaiterImpl(logger, timeout, sleepBetweenRetries, baseUri, restClientBuilder);
 	}
 
+	/**
+	 * Creates a no-op {@link ArtifactAwaiter}.
+	 * @return the {@link ArtifactAwaiter}
+	 */
+	static ArtifactAwaiter noop() {
+		return (_) -> {
+
+		};
+	}
+
 }
