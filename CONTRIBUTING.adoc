@@ -29,7 +29,7 @@ They can also be added after the original pull request but before a merge.
 * Add the ASF license header comment to all new `.java` fileSet (copy from existing fileSet in the project)
 * Add yourself as an `@author` to the `.java` fileSet that you modify substantially (more than cosmetic changes).
 * Add some Javadocs.
-* A few unit tests would help a lot as well -- someone has to do it.
+* A few unit tests would help a lot as well — someone has to do it.
 * If no-one else is using your branch, please rebase it against the current main (or other target branch in the main project).
 * When writing a commit message please follow https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html[these conventions], if you are fixing an existing issue please add `Fixes gh-XXXX` at the end of the commit message (where `XXXX` is the issue number).
 
@@ -63,5 +63,5 @@ You can import the resource's code into any Eclipse based distribution with Buil
 
 === Importing into other IDEs
 
-Gradle is well supported by most Java IDEs.
+Gradle is well-supported by most Java IDEs.
 Refer to your vendor documentation.

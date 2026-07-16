@@ -101,8 +101,7 @@ public interface Deployment {
 			return switch (this) {
 				case PENDING, VALIDATING, PUBLISHING -> false;
 				case VALIDATED -> publishingType == PublishingType.USER_MANAGED;
-				case PUBLISHED -> true;
-				case FAILED -> true;
+				case PUBLISHED, FAILED -> true;
 			};
 		}
 

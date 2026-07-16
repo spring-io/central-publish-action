@@ -58,7 +58,7 @@ class PortalMockIntegrationTests {
 	}
 
 	@Test
-	void test() throws Exception {
+	void test() {
 		String deploymentId = uploadBundle();
 		StatusResponse status = waitForFinalStatus(deploymentId);
 		assertThat(status.deploymentState()).isEqualTo("PUBLISHED");
@@ -75,7 +75,7 @@ class PortalMockIntegrationTests {
 	}
 
 	@Test
-	void testUserManagedPublish() throws Exception {
+	void testUserManagedPublish() {
 		String deploymentId = uploadBundle("USER_MANAGED");
 		StatusResponse status = waitForStatus(deploymentId, "VALIDATED");
 		assertThat(status.deploymentState()).isEqualTo("VALIDATED");
@@ -89,7 +89,7 @@ class PortalMockIntegrationTests {
 	}
 
 	@Test
-	void testUserManagedDrop() throws Exception {
+	void testUserManagedDrop() {
 		String deploymentId = uploadBundle("USER_MANAGED");
 		StatusResponse status = waitForStatus(deploymentId, "VALIDATED");
 		assertThat(status.deploymentState()).isEqualTo("VALIDATED");
