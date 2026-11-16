@@ -47,4 +47,4 @@ runs:
     - name: Download bundle
       shell: bash
       # This doesn't run in an actions container, so we have to use localhost to access the Sonatype portal mock
-      run: wget localhost:${{ inputs.sonatype-portal-mock-port }}/debug/published-deployments/0 -o bundle.zip
+      run: wget localhost:${{ inputs.sonatype-portal-mock-port }}/debug/published-deployments/0 -O bundle.zip
