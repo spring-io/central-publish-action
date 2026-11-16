@@ -53,6 +53,14 @@ jobs:
           docker buildx build --platform linux/amd64,linux/arm64 \
             --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
             --tag "${IMAGE}" --push .
+  deploy:
+    name: 'Deploy to repo.spring.io'
+    needs:
+      - build
+    uses: ./.github/workflows/deploy.yml
+    with:
+      repository: 'libs-release-local'
+    secrets: inherit
   create-github-release:
     name: Create GitHub Release
     permissions:
@@ -60,6 +68,7 @@ jobs:
     needs:
       - build
       - publish-image
+      - deploy
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check Out Code

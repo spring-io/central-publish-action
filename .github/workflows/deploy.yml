@@ -1,0 +1,40 @@
+name: Deploy
+permissions:
+  contents: read
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: 'Artifactory repository to deploy to'
+        required: true
+        type: string
+      skip-releases:
+        description: 'Whether to skip deploying release (non-SNAPSHOT) versions'
+        required: false
+        type: boolean
+        default: false
+jobs:
+  deploy:
+    name: 'Deploy'
+    if: ${{ github.repository == 'spring-io/central-publish-action' }}
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+      - name: Build
+        id: build
+        uses: ./.github/actions/build
+        with:
+          gradle-task: '-PdeploymentRepository=$(pwd)/maven-repo publishAllPublicationsToDeploymentRepository'
+      - name: Deploy to repo.spring.io
+        if: ${{ !inputs.skip-releases || endsWith(steps.build.outputs.version, '-SNAPSHOT') }}
+        uses: spring-io/artifactory-deploy-action@c9ab821b2d7fb778b7e29f9cd6e9007e54a1eb4c # v0.0.7
+        with:
+          uri: 'https://repo.spring.io'
+          username: ${{ secrets.ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          build-name: ${{ format('maven-central-publish-{0}', github.ref_name) }}
+          repository: ${{ inputs.repository }}
+          folder: './maven-repo/'
+          signing-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          signing-passphrase: ${{ secrets.GPG_PASSPHRASE }}
