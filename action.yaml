@@ -54,7 +54,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/spring-io/central-publish-action:v0.5.0'
   args:
     - --centralportal.base-uri=${{ inputs.base-uri }}
     - --centralportal.maven-central-base-uri=${{ inputs.maven-central-base-uri }}
