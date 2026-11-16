@@ -18,9 +18,9 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     id "checkstyle"
-    id "io.spring.javaformat" version "$javaFormatVersion"
+    alias(libs.plugins.spring.javaformat)
     id "java"
-    id "org.springframework.boot" version "$springBootVersion"
+    alias(libs.plugins.spring.boot)
 }
 
 repositories {
@@ -34,7 +34,7 @@ java {
 }
 
 checkstyle {
-    toolVersion = "$checkstyleToolVersion"
+    toolVersion = libs.versions.checkstyle.get()
 }
 
 configurations {
@@ -46,8 +46,8 @@ configurations {
 }
 
 dependencies {
-    checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
-    checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
+    checkstyle(libs.checkstyle)
+    checkstyle(libs.spring.javaformat.checkstyle)
 
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
 

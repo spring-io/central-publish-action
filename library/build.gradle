@@ -16,7 +16,7 @@
 
 plugins {
     id "checkstyle"
-    id "io.spring.javaformat" version "$javaFormatVersion"
+    alias(libs.plugins.spring.javaformat)
     id "java-library"
     id "maven-publish"
 }
@@ -69,14 +69,14 @@ publishing {
 }
 
 checkstyle {
-    toolVersion = "$checkstyleToolVersion"
+    toolVersion = libs.versions.checkstyle.get()
 }
 
 dependencies {
-    checkstyle("com.puppycrawl.tools:checkstyle:${checkstyle.toolVersion}")
-    checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:${javaFormatVersion}")
+    checkstyle(libs.checkstyle)
+    checkstyle(libs.spring.javaformat.checkstyle)
 
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"))
+    implementation(platform(libs.spring.boot.dependencies))
 
     api("org.springframework:spring-core")
     api("org.springframework:spring-web")

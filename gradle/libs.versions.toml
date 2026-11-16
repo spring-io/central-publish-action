@@ -1,0 +1,13 @@
+[versions]
+checkstyle = "10.25.0"
+spring-boot = "4.1.0"
+spring-javaformat = "0.0.47"
+
+[libraries]
+checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-javaformat-checkstyle = { module = "io.spring.javaformat:spring-javaformat-checkstyle", version.ref = "spring-javaformat" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-javaformat = { id = "io.spring.javaformat", version.ref = "spring-javaformat" }
