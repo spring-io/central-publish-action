@@ -27,6 +27,10 @@ runs:
     - name: Unzip artifacts to deploy
       shell: bash
       run: unzip integration-test/bundle.zip -d integration-test/bundle/
+    # action.yaml references the released image, build from source to test the current code
+    - name: Use Dockerfile
+      shell: bash
+      run: yq -i '.runs.image = "Dockerfile"' action.yaml
     - name: Run action
       uses: ./
       with:

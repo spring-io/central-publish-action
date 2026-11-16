@@ -19,12 +19,47 @@ jobs:
         uses: ./.github/actions/build
     outputs:
       version: ${{ steps.build.outputs.version }}
+  publish-image:
+    name: 'Publish Docker image'
+    needs:
+      - build
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ${{ format('ghcr.io/{0}:{1}', github.repository, github.ref_name) }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+      - name: Check action.yaml references image
+        run: |
+          if ! grep -qF "image: 'docker://${IMAGE}'" action.yaml; then
+            echo "action.yaml must reference docker://${IMAGE}"
+            exit 1
+          fi
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      # Released tags are referenced by consumers, never overwrite them
+      - name: Check image doesn't exist
+        run: |
+          if docker buildx imagetools inspect "${IMAGE}" > /dev/null 2>&1; then
+            echo "${IMAGE} already exists"
+            exit 1
+          fi
+      - name: Build and push image
+        run: |
+          docker buildx create --use
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            --tag "${IMAGE}" --push .
   create-github-release:
     name: Create GitHub Release
     permissions:
       contents: write
     needs:
       - build
+      - publish-image
     runs-on: 'ubuntu-latest'
     steps:
       - name: Check Out Code
