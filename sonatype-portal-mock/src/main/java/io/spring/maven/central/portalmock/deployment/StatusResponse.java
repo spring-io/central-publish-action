@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.jspecify.annotations.Nullable;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 public record StatusResponse(String deploymentId, String deploymentName, String deploymentState, List<String> purls,
 		@Nullable Map<String, String> errors) {
 }

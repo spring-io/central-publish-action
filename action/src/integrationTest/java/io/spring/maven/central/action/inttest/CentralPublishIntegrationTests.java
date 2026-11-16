@@ -47,6 +47,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
@@ -59,8 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Moritz Halbritter
  */
 @ActiveProfiles("inttest")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		classes = CentralPublishIntegrationTestsApp.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = CentralPublishIntegrationTestsApp.class)
 class CentralPublishIntegrationTests {
 
 	private static final String TOKEN_NAME = "token-name";

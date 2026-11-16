@@ -1,7 +1,7 @@
 [versions]
-checkstyle = "10.25.0"
-spring-boot = "4.1.0"
-spring-javaformat = "0.0.47"
+checkstyle = "14.4.0"
+spring-boot = "4.1.2"
+spring-javaformat = "0.0.48"
 
 [libraries]
 checkstyle = { module = "com.puppycrawl.tools:checkstyle", version.ref = "checkstyle" }
